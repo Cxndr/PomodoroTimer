@@ -1,44 +1,73 @@
-document.write("Hello, World");
 window.onload = function() {
-    const time_interval = setInterval(function() {
-        var current_time = Date.getTime();
-        document.getElementById("timer-text").innerHTML = current_time;
-    
-    }, 1000);
 }
 
+function padTo2Digits(num) {
+    return num.toString().padStart(2,"0");
+}
 
-/*
-const time_interval = setInterval(function() {
-    var current_time = Date.getTime();
-    document.getElementById("timer-text").innerHTML = current_time;
+// get elements
+const timer_text = document.getElementById('timer-text');
+const debug = document.getElementById('debug');
 
-}, 1000);
-*/
+// mechanical variables
+const start_time = Date.now();
+let current_time = Date.now();
+let total_seconds_passed;
+let seconds;
+let minutes;
+let output;
+const work_time = (10);
+const break_time = 5;
+let works = 0;
+let breaks = 0;
+let breaking = false;
 
-/*
-    var start_time = Date.getTime();
-    var work_time = 25 * 60 * 1000;
-    var break_time = 5 * 60 * 1000;
-    var works = 0;
-    var breaks = 0; 
-    var target_works = 3;
+// need to run after updating "works" or "breaks"
+function updateTimeVariables() {
+    work_time_current = work_time * works;
+    break_time_current = break_time * breaks;
+    work_time_rollover = work_time * (works + 1);
+    break_time_rollover = break_time * (breaks + 1);
+}
 
+// triggers every 1000 milliseconds
+const timer_interval = setInterval(function() {
 
-    const time_interval = setInterval(function() {
+    current_time = Date.now();
+    total_seconds_passed = Math.floor( (current_time - start_time) / 1000 );
 
-        var current_time = Date.getTime() - start_time;
+    updateTimeVariables();
 
-        var time_passed = current_time - start_time;
-
-        document.getElementById("timer-text").innerHTML = time_passed;
-
-        if time_passed > work_time {
+    // switch to break
+    if (breaking == false) {
+        if ( total_seconds_passed >= ( work_time_rollover + break_time_current ) ) {
             works += 1;
+            updateTimeVariables();
+            breaking = true;
         }
-    }, 1000)
-
-    if works > target_works {
-        clearInterval(time_interval);
     }
-*/
+
+    // switch to work
+    if (breaking == true) {
+        if ( total_seconds_passed >= ( break_time_rollover + work_time_current ) ) {
+            breaks += 1;
+            updateTimeVariables();
+            breaking = false;
+        }
+    }
+
+    minutes = Math.floor(total_seconds_passed / 60);
+    seconds = Math.floor(total_seconds_passed % 60);
+
+    output = minutes + ":" + padTo2Digits(seconds);
+    timer_text.innerHTML = output;
+    
+
+    // debugging
+    debug.innerHTML = "works: " + works + " | breaks: " + breaks + " | breaking: " + breaking;
+
+
+}
+, 1000)
+
+
