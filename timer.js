@@ -11,6 +11,10 @@ const debug = document.getElementById('debug');
 const start_button = document.getElementById('start-button');
 const reset_button = document.getElementById('reset-button');
 const timer_buttons = document.getElementsByClassName('timer-button');
+const stats_work_sessions = document.getElementById('work-sessions');
+const stats_work_time = document.getElementById('work-time');
+const stats_break_sessions = document.getElementById('break-sessions');
+const stats_break_time = document.getElementById('break-time');
 
 // hide button focus styling on mouse up 
 // - (stops clicking button from creating focus styling but keeps accessibility)
@@ -19,9 +23,6 @@ $('.timer-button').mouseup(function() {
 });
 
 // audio - alerts
-let audio_break_alert = new Audio('/sound/hi/1/1.wav');
-let audio_work_alert = new Audio('/sound/hi/3/1.wav');
-
 function audioAlert(type) {
     let random_alert = Math.floor(Math.random() * 3) + 1;
     let random_alert_string = String(random_alert);
@@ -42,9 +43,7 @@ function audioAlert(type) {
         
         default:
             break;
-        
     }
-
 }
 
 
@@ -85,6 +84,21 @@ function printOutput() {
     timer_text.innerHTML = output;
 }
 
+// ms time to x hours x mins x seconds
+function msToTimeString(ms) {
+    let seconds_value = Math.floor(ms/1000);
+    let minutes_value = Math.floor((seconds_value / 60) % 60);
+    let hours_value = Math.floor((minutes_value / 60) % 60);
+    return String(hours_value) + " hours " + String(minutes_value) + " minutes" + String(seconds_value) + " seconds";
+}
+
+// update stats display
+function updateStats() {
+    stats_work_sessions.innerHTML = String(works);
+    stats_work_time.innerHTMl = msToTimeString(works * work_time);
+    stats_break_sessions.innerHTML = String(breaks);
+    stats_break_time.innerHTMl = msToTimeString(breaks * break_time);
+}
 
 // play-pause button function
 start_button.addEventListener('click', function() {
@@ -105,7 +119,6 @@ start_button.addEventListener('click', function() {
     }
 });
 
-
 // reset button
 reset_button.addEventListener('click', function() {
     clearInterval(timer_interval);
@@ -118,7 +131,6 @@ reset_button.addEventListener('click', function() {
 
 });
 
-
 // timer interval
 function timerTick() {
 
@@ -126,6 +138,7 @@ function timerTick() {
     total_ms_passed = current_time - start_time;
 
     updateTimeVariables();
+    updateStats();
 
     // switch to break
     if (breaking == false) {

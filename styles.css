@@ -88,3 +88,15 @@ main {
     color: pink;
     transform: translateY(0);
 }
+#timer-stats {
+    font-family: Lato, Arial;
+    color: white;
+    font-size: 1rem;
+}
+#timer-stats p {
+    padding: 0.1rem;
+    margin: 0.1rem;
+}
+#timer-stats b {
+    font-weight: semibold;
+}
