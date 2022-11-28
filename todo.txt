@@ -1,0 +1,13 @@
+**** Design Choices ****
+ 
+ - Count up, not down. Counting down encourages looking forward to finishing ("i have this much time left"). Counting up encourages looking at what you've accomplished so far ("i have worked this long").
+ - Minutes and seconds only. No milliseconds. Milliseconds are stressful and if in sight can make anxious about time ticking (seconds to a lesser extent too but a compramise has to be made). Hours aren't needed because a pomodoro period should be a couple hours at absolute maximum.
+ - Alert sounds have multiple recordings for each sound. Method to combat audio fatique (sounds becoming irritating and boring after hearing too many times).
+
+**** Ideas ****
+
+ - play music/playlists for work & break modes (just for works?), use youtube?
+ - play alarm when entering break mode?
+ - ask to confirm break mode? way to skip break?
+ - measure worked sessions, time worked, time breaked, time paused.
+ - do local storage for keeping track of stats (daily, weekly, monthly, session time, etc.)
