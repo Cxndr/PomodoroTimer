@@ -18,6 +18,35 @@ $('.timer-button').mouseup(function() {
     this.blur();
 });
 
+// audio - alerts
+let audio_break_alert = new Audio('/sound/hi/1/1.wav');
+let audio_work_alert = new Audio('/sound/hi/3/1.wav');
+
+function audioAlert(type) {
+    let random_alert = Math.floor(Math.random() * 3) + 1;
+    let random_alert_string = String(random_alert);
+    let audio_alert;
+    let file_path;
+    switch(type) {
+        case 0: // break alert
+            file_path = "/sound/hi/1/" + random_alert_string + ".wav";
+            audio_alert = new Audio(file_path);
+            audio_alert.play();
+            break;
+        
+        case 1: // work alert
+            file_path = "/sound/hi/3/" + random_alert_string + ".wav";
+            audio_alert = new Audio(file_path);
+            audio_alert.play();
+            break;
+        
+        default:
+            break;
+        
+    }
+
+}
+
 
 // object variables
 let timer_interval;
@@ -31,8 +60,8 @@ let total_seconds_passed;
 let seconds;
 let minutes;
 let output;
-const work_time = 10 * 1000; // * 1000 for ms to seconds
-const break_time = 5 * 1000;
+const work_time = 3 * 1000; // * 1000 for ms to seconds
+const break_time = 3 * 1000;
 let works = 0;
 let breaks = 0;
 let breaking = false;
@@ -107,6 +136,7 @@ function timerTick() {
             total_ms_passed = 0;
             saved_time = 0;
             start_time = Date.now();
+            audioAlert(0);
         }
     }
 
@@ -119,6 +149,7 @@ function timerTick() {
             total_ms_passed = 0;
             saved_time = 0;
             start_time = Date.now();
+            audioAlert(1);
         }
     }
 
