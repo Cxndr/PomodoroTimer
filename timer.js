@@ -8,19 +8,37 @@ function padTo2Digits(num) {
 // get elements
 const timer_text = document.getElementById('timer-text');
 const debug = document.getElementById('debug');
+const start_button = document.getElementById('start-button');
+const reset_button = document.getElementById('reset-button');
+const timer_buttons = document.getElementsByClassName('timer-button');
+
+// hide button focus styling on mouse up 
+// - (stops clicking button from creating focus styling but keeps accessibility)
+$('.timer-button').mouseup(function() {
+    this.blur();
+});
+
+
+// object variables
+let timer_interval;
 
 // mechanical variables
-const start_time = Date.now();
+let start_time = Date.now();
 let current_time = Date.now();
+let saved_time = 0;
+let total_ms_passed = 0;
 let total_seconds_passed;
 let seconds;
 let minutes;
 let output;
-const work_time = (10);
-const break_time = 5;
+const work_time = 10 * 1000; // * 1000 for ms to seconds
+const break_time = 5 * 1000;
 let works = 0;
 let breaks = 0;
 let breaking = false;
+let running = false;
+let paused = false;
+
 
 // need to run after updating "works" or "breaks"
 function updateTimeVariables() {
@@ -30,44 +48,88 @@ function updateTimeVariables() {
     break_time_rollover = break_time * (breaks + 1);
 }
 
-// triggers every 1000 milliseconds
-const timer_interval = setInterval(function() {
+function printOutput() {
+    total_seconds_passed = Math.floor(total_ms_passed / 1000);
+    minutes = Math.floor(total_seconds_passed / 60);
+    seconds = Math.floor(total_seconds_passed % 60);
+    output = minutes + ":" + padTo2Digits(seconds);
+    timer_text.innerHTML = output;
+}
+
+
+// play-pause button function
+start_button.addEventListener('click', function() {
+    if (running == true) {
+        running = false;
+        paused = true;
+        start_button.innerHTML = "Resume";
+        saved_time = total_ms_passed;
+        clearInterval(timer_interval);
+    }
+    else { 
+        running = true;
+        paused = false;
+        start_button.innerHTML = "Pause";
+        start_time = Date.now() - saved_time;
+        // triggers every 1000 milliseconds
+        timer_interval = setInterval(timerTick, 100);
+    }
+});
+
+
+// reset button
+reset_button.addEventListener('click', function() {
+    clearInterval(timer_interval);
+    running = false;
+    paused = false;
+    total_ms_passed = 0;
+    saved_time = 0;
+    printOutput();
+    start_button.innerHTML = "Start";
+
+});
+
+
+// timer interval
+function timerTick() {
 
     current_time = Date.now();
-    total_seconds_passed = Math.floor( (current_time - start_time) / 1000 );
+    total_ms_passed = current_time - start_time;
 
     updateTimeVariables();
 
     // switch to break
     if (breaking == false) {
-        if ( total_seconds_passed >= ( work_time_rollover + break_time_current ) ) {
+        if ( total_ms_passed >= ( work_time ) ) {
             works += 1;
             updateTimeVariables();
             breaking = true;
+            total_ms_passed = 0;
+            saved_time = 0;
+            start_time = Date.now();
         }
     }
 
     // switch to work
     if (breaking == true) {
-        if ( total_seconds_passed >= ( break_time_rollover + work_time_current ) ) {
+        if ( total_ms_passed >= ( break_time ) ) {
             breaks += 1;
             updateTimeVariables();
             breaking = false;
+            total_ms_passed = 0;
+            saved_time = 0;
+            start_time = Date.now();
         }
     }
 
-    minutes = Math.floor(total_seconds_passed / 60);
-    seconds = Math.floor(total_seconds_passed % 60);
-
-    output = minutes + ":" + padTo2Digits(seconds);
-    timer_text.innerHTML = output;
-    
-
-    // debugging
-    debug.innerHTML = "works: " + works + " | breaks: " + breaks + " | breaking: " + breaking;
-
+    printOutput()
 
 }
-, 1000)
 
 
+
+// debugging
+const debug_interval = setInterval(function() {
+    debug.innerHTML = "works: " + works + " | breaks: " + breaks + " | breaking: " + breaking + " | running: " + running + " | saved_time: " + saved_time + " | total_ms_passed: " + total_ms_passed;
+}
+, 100)

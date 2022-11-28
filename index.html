@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Pomodo Comodo</title>
+        <title>Pomodoro Dinosauro</title>
         <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
@@ -11,13 +13,15 @@
         <div id="debug">debugging inactive</div>
         <main>
             <div id="timer">
-                <div id="timer-text"></div>
-                <button class="button" id="start-button" onclick="timerStart()">Start</button>
-                <button class="button" id="reset-button" onclick="timerReset()">Reset</button>
-                <button class="button" id="pause-button" onclick="timerPause()">Pause</button>
+                <div id="timer-text">0:00</div>
+                <div id="timer-buttons">
+                    <button class="timer-button" id="start-button">Start</button>
+                    <button class="timer-button" id="reset-button">Reset</button>
+                </div>
             </div>
         </main>
         <script src="timer.js"></script>
     </body>
 </html>
+
 
