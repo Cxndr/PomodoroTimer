@@ -20,10 +20,18 @@
                 </div>
             </div>
             <div id="timer-stats">
-                <p><b>Work Sessions: </b><span id="work-sessions">0</span></p>
-                <p><b>Work Time: </b><span id="work-time">0000</span></p>
-                <p><b>Break Sessions: </b><span id="break-sessions">0</span></p>
-                <p><b>Break Time: </b><span id="break-time">0000</span></p>
+                <dl>
+                    <dt>Work Sessions:</dt><dd id="work-sessions"></dd>
+                    <dt>Work Time:</dt><dd id="work-time"></dd>
+                    <dt>Break Sessions:</dt><dd id="break-sessions"></dd>
+                    <dt>Break Time:</dt><dd id="break-time"></dd>
+
+                </dl>
+
+                <div class="stat-labels"><b>Work Sessions: </b></div><div class="stat-texts" id="work-sessions">-</div>
+                <div class="stat-labels"><b>Work Time: </b></div><div id="work-time">-</div>
+                <div class="stat-labels"><b>Break Sessions: </b></div><div id="break-sessions">-</div>
+                <div class="stat-labels"><b>Break Time: </b></div><div id="break-time">-</div>
             </div>
         </main>
         <script src="timer.js"></script>

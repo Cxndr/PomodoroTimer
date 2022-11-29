@@ -12,13 +12,14 @@ body, html {
 
 main {
     height: 100%;
-    /* border: 5px solid cyan; */
     padding: 0;
     margin: 0;
     box-sizing: border-box;
     display:flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    /*border: 1px solid red;*/
 }
 
 #debug {
@@ -33,6 +34,8 @@ main {
 
 #timer {
     background-color: rgba(20,20,20,0);
+    /*border: 1px solid blue;*/
+
 }
 
 #timer-text {
@@ -92,6 +95,7 @@ main {
     font-family: Lato, Arial;
     color: white;
     font-size: 1rem;
+    border: 1px solid green;
 }
 #timer-stats p {
     padding: 0.1rem;
@@ -99,4 +103,19 @@ main {
 }
 #timer-stats b {
     font-weight: semibold;
+}
+
+.stat-labels {
+    text-align: right;
+    width: 50%;    
+}
+.stat-texts {
+    text-align: left;
+    width: 50%;
+}
+
+#timer-stats dt {
+    display: block; 
+    text-align: right;
+    float: left;
 }
