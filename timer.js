@@ -89,15 +89,15 @@ function msToTimeString(ms) {
     let seconds_value = Math.floor(ms/1000);
     let minutes_value = Math.floor((seconds_value / 60) % 60);
     let hours_value = Math.floor((minutes_value / 60) % 60);
-    return String(hours_value) + " hours " + String(minutes_value) + " minutes" + String(seconds_value) + " seconds";
+    return String(hours_value) + " hours " + String(minutes_value) + " minutes " + String(seconds_value) + " seconds";
 }
 
 // update stats display
 function updateStats() {
     stats_work_sessions.innerHTML = String(works);
-    stats_work_time.innerHTMl = msToTimeString(works * work_time);
+    stats_work_time.innerHTML = msToTimeString(works * work_time + (total_ms_passed * Number(!breaking)));
     stats_break_sessions.innerHTML = String(breaks);
-    stats_break_time.innerHTMl = msToTimeString(breaks * break_time);
+    stats_break_time.innerHTML = msToTimeString(breaks * break_time + (total_ms_passed * Number(breaking)));
 }
 
 // play-pause button function
