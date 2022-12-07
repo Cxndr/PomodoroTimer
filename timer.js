@@ -11,10 +11,12 @@ const debug = document.getElementById('debug');
 const start_button = document.getElementById('start-button');
 const reset_button = document.getElementById('reset-button');
 const timer_buttons = document.getElementsByClassName('timer-button');
+const timer_stats_button = document.getElementById('timer-stats-button');
 const stats_work_sessions = document.getElementById('work-sessions');
 const stats_work_time = document.getElementById('work-time');
 const stats_break_sessions = document.getElementById('break-sessions');
 const stats_break_time = document.getElementById('break-time');
+const status_div = document.getElementById('status');
 
 // hide button focus styling on mouse up 
 // - (stops clicking button from creating focus styling but keeps accessibility)
@@ -66,6 +68,8 @@ let breaks = 0;
 let breaking = false;
 let running = false;
 let paused = false;
+let timer_stats_show = false;
+let timer_status = 0; // 0=none, 1=working, 2=breaking, 3=paused
 
 
 // need to run after updating "works" or "breaks"
@@ -89,7 +93,7 @@ function msToTimeString(ms) {
     let seconds_value = Math.floor(ms/1000);
     let minutes_value = Math.floor((seconds_value / 60) % 60);
     let hours_value = Math.floor((minutes_value / 60) % 60);
-    return String(hours_value) + " hours " + String(minutes_value) + " minutes " + String(seconds_value) + " seconds";
+    return String(hours_value) + "h " + String(minutes_value) + "m " + String(seconds_value) + "s";
 }
 
 // update stats display
@@ -100,6 +104,27 @@ function updateStats() {
     stats_break_time.innerHTML = msToTimeString(breaks * break_time + (total_ms_passed * Number(breaking)));
 }
 
+//update status display
+function updateStatus() {
+    switch (timer_status) {
+        case 1:
+            $("#status").css("display", "block");
+            status_div.innerHTML = "Working...";
+            break;
+        case 2:
+            $("#status").css("display", "block");
+            status_div.innerHTML = "Breaking";
+            break;
+        case 3:
+            $("#status").css("display", "block");
+            status_div.innerHTML = "Paused";
+            break;
+        default: 
+            $("#status").css("display", "none");
+            break;
+    }
+}
+
 // play-pause button function
 start_button.addEventListener('click', function() {
     if (running == true) {
@@ -108,6 +133,8 @@ start_button.addEventListener('click', function() {
         start_button.innerHTML = "Resume";
         saved_time = total_ms_passed;
         clearInterval(timer_interval);
+        timer_status = 3;
+        updateStatus()
     }
     else { 
         running = true;
@@ -116,6 +143,8 @@ start_button.addEventListener('click', function() {
         start_time = Date.now() - saved_time;
         // triggers every 1000 milliseconds
         timer_interval = setInterval(timerTick, 100);
+        if (breaking == false) {timer_status = 1;} else {timer_status = 2;}
+        updateStatus()
     }
 });
 
@@ -126,10 +155,28 @@ reset_button.addEventListener('click', function() {
     paused = false;
     total_ms_passed = 0;
     saved_time = 0;
+    timer_status = 0;
+    updateStatus()
     printOutput();
     start_button.innerHTML = "Start";
 
 });
+
+
+// timer stats button
+timer_stats_button.addEventListener('click', function() {
+    if (timer_stats_show == true) {
+        timer_stats_show = false;
+        timer_stats_button.innerHTML = "show stats";
+        $("#timer-stats").css("display", "none");
+    }
+    else {
+        timer_stats_show = true;
+        timer_stats_button.innerHTML = "hide stats";
+        $("#timer-stats").css("display", "block");
+    }
+});
+
 
 // timer interval
 function timerTick() {
@@ -150,6 +197,8 @@ function timerTick() {
             saved_time = 0;
             start_time = Date.now();
             audioAlert(0);
+            timer_status = 2;
+            updateStatus()
         }
     }
 
@@ -163,6 +212,8 @@ function timerTick() {
             saved_time = 0;
             start_time = Date.now();
             audioAlert(1);
+            timer_status = 1;
+            updateStatus()
         }
     }
 

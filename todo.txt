@@ -11,3 +11,7 @@
  - ask to confirm break mode? way to skip break?
  - measure worked sessions, time worked, time breaked, time paused.
  - do local storage for keeping track of stats (daily, weekly, monthly, session time, etc.)
+ - make status "working..." and "breaking" animated. maybe flash for paused, bounce for breaking and extend ... for working.
+ - animate "show stats" button: have background wipe in from top and then fade in text once its done.
+
+

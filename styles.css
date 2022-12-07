@@ -32,6 +32,16 @@ main {
     color: white;
 }
 
+#status {
+    display: block;
+    background-color: rgba(30,30,30,0.3);
+    border-radius: 0.4rem;
+    color: rgb(230,230,230);
+    font-family: Lato, sans-serif;
+    font-size: 2.5rem;
+    padding: 0.4rem 0.8rem 0.5rem 0.8rem;
+}
+
 #timer {
     background-color: rgba(20,20,20,0);
     /*border: 1px solid blue;*/
@@ -91,39 +101,75 @@ main {
     color: pink;
     transform: translateY(0);
 }
+
 #timer-stats {
     font-family: Lato, Arial;
     color: white;
     font-size: 1rem;
-    border: 1px solid green;
-    width: 600px;
-}
-#timer-stats p {
-    padding: 0.1rem;
-    margin: 0.1rem;
-}
-#timer-stats b {
-    font-weight: semibold;
+    /* border: 1px solid green; */
+    background-color: rgba(20,20,20,0.45);
+    width: 16rem;
+    padding: 0.4rem 0 0.5rem 0;
+    margin: 1rem 0 0 0;
+    display: none; /* display:block via js */
 }
 
-.stat-texts {
+#timer-stats-button {
+    text-align: center;
+    color: rgb(200,200,200);
+    font-size: 1.3rem;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    padding: 0.2rem 0.5rem;
+    margin: 1rem 0 0 0;
+    background-color: rgb(35,35,35);
+    border: none;
+    border-radius: 0.4rem;
+    transition: all 250ms;
+}
+#timer-stats-button:hover {
+    background-color: rgb(30,30,30);
+    cursor: pointer;
+    position: relative;
+    top: -1px;
+    color: rgb(235,235,235);
+    box-shadow: rgba(0,0,0,0.2) 0 0.4rem 2rem;
+}
 
+#timer-stats dl {
+    line-height: 1.5rem;
+    padding: 0;
+    margin: 0;
+}
+
+#timer-stats dd:before {
+    content: "\00a0"; /* blank space */
 }
 
 #timer-stats dd {
     float: right;
     text-align: left;
     width: 50%;
-    border: 1px solid red;
+    /* border: 1px solid red; */
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    color: rgb(255, 255, 255);
 }
 
 #timer-stats dt {
     float: left;
     text-align: right;
     width: 50%;
-    border: 1px solid blueviolet;
+    /* border: 1px solid blueviolet; */
     box-sizing: border-box;
+    color: rgb(210, 210, 210);
+}
+
+#timer-stats p {
+    padding: 0.1rem;
+    margin: 0.1rem;
+}
+#timer-stats b {
+    font-weight: semibold;
 }
