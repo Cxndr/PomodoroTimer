@@ -110,20 +110,27 @@ function updateStatus() {
         case 1:
             $("#status").css("display", "block");
             status_div.innerHTML = "Working...";
+            $('#status').css("animation-name", "none");
+            $('#status').css("animation-duration", "0.5s");
             break;
         case 2:
             $("#status").css("display", "block");
             status_div.innerHTML = "Breaking";
+            $('#status').css("animation-name", "bounce");
+            $('#status').css("animation-duration", "0.5s");
             break;
         case 3:
             $("#status").css("display", "block");
             status_div.innerHTML = "Paused";
+            $('#status').css("animation-name", "flash");
+            $('#status').css("animation-duration", "2s");
             break;
         default: 
             $("#status").css("display", "none");
             break;
     }
 }
+
 
 // play-pause button function
 start_button.addEventListener('click', function() {
@@ -161,7 +168,6 @@ reset_button.addEventListener('click', function() {
     start_button.innerHTML = "Start";
 
 });
-
 
 // timer stats button
 timer_stats_button.addEventListener('click', function() {
@@ -220,7 +226,6 @@ function timerTick() {
     printOutput()
 
 }
-
 
 
 // debugging
