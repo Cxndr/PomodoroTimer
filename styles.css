@@ -40,10 +40,20 @@ main {
     font-family: Lato, sans-serif;
     font-size: 2.5rem;
     padding: 0.4rem 0.8rem 0.5rem 0.8rem;
-    animation-name: bounce;
+    transition: all 3s;
+    animation-name: none;
     animation-duration: 0.5s;
     animation-iteration-count: infinite;
     animation-direction: alternate;
+    animation-timing-function: linear;
+}
+#status.elipses:after {
+    content: "";
+    animation-name: elipses;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-timing-function: linear;
 }
 
 #timer {
@@ -180,11 +190,18 @@ main {
 
 /* --- Animations --- */
 @keyframes flash {
-    20% { opacity: 1; }
+    0% { opacity: 1; }
     100% { opacity: 0; }
 }
 
 @keyframes bounce {
     0% { position: relative; top:0; }
     100% { position: relative; top: -8px; }
+}
+
+@keyframes elipses {
+    0% { content: ""; }
+    25% { content: "."; }
+    50% { content: ".."; }
+    75% { content: "..."; }
 }

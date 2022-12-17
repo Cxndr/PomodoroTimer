@@ -61,8 +61,8 @@ let total_seconds_passed;
 let seconds;
 let minutes;
 let output;
-const work_time = 3 * 1000; // * 1000 for ms to seconds
-const break_time = 3 * 1000;
+const work_time = 8 * 1000; // * 1000 for ms to seconds
+const break_time = 2.5 * 1000;
 let works = 0;
 let breaks = 0;
 let breaking = false;
@@ -90,9 +90,9 @@ function printOutput() {
 
 // ms time to x hours x mins x seconds
 function msToTimeString(ms) {
-    let seconds_value = Math.floor(ms/1000);
-    let minutes_value = Math.floor((seconds_value / 60) % 60);
-    let hours_value = Math.floor((minutes_value / 60) % 60);
+    let seconds_value = Math.floor( (ms/1000) % 60 );
+    let minutes_value = Math.floor( (ms / (1000 * 60)) % 60 );
+    let hours_value = Math.floor( (ms / (1000 * 60 * 60)) % 60 );
     return String(hours_value) + "h " + String(minutes_value) + "m " + String(seconds_value) + "s";
 }
 
@@ -109,24 +109,28 @@ function updateStatus() {
     switch (timer_status) {
         case 1:
             $("#status").css("display", "block");
-            status_div.innerHTML = "Working...";
-            $('#status').css("animation-name", "none");
+            status_div.innerHTML = "Working";
+            $('#status').css("animation-name", "elipses");
             $('#status').css("animation-duration", "0.5s");
+            $('#status').addClass('elipses');
             break;
         case 2:
             $("#status").css("display", "block");
             status_div.innerHTML = "Breaking";
             $('#status').css("animation-name", "bounce");
             $('#status').css("animation-duration", "0.5s");
+            $('#status').removeClass('elipses');
             break;
         case 3:
             $("#status").css("display", "block");
             status_div.innerHTML = "Paused";
             $('#status').css("animation-name", "flash");
-            $('#status').css("animation-duration", "2s");
+            $('#status').css("animation-duration", "1s");
+            $('#status').removeClass('elipses');
             break;
         default: 
             $("#status").css("display", "none");
+            $('#status').removeClass('elipses');
             break;
     }
 }
