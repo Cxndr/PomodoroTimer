@@ -40,12 +40,13 @@ main {
     font-family: Lato, sans-serif;
     font-size: 2.5rem;
     padding: 0.4rem 0.8rem 0.5rem 0.8rem;
-    transition: all 3s;
+    /*transition: all 0.5s; we are doing opacity transition through javscript now */ 
     animation-name: none;
     animation-duration: 0.5s;
     animation-iteration-count: infinite;
     animation-direction: alternate;
     animation-timing-function: linear;
+    position: relative;
 }
 #status.elipses:after {
     content: "";
@@ -59,6 +60,7 @@ main {
 #timer {
     background-color: rgba(20,20,20,0);
     /*border: 1px solid blue;*/
+    transition: transform 1s;
 
 }
 
@@ -188,7 +190,9 @@ main {
     font-weight: semibold;
 }
 
+
 /* --- Animations --- */
+
 @keyframes flash {
     0% { opacity: 1; }
     100% { opacity: 0; }

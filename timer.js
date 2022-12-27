@@ -61,8 +61,8 @@ let total_seconds_passed;
 let seconds;
 let minutes;
 let output;
-const work_time = 8 * 1000; // * 1000 for ms to seconds
-const break_time = 2.5 * 1000;
+const work_time = 10 * 1000; // * 1000 for ms to seconds
+const break_time = 10 * 1000;
 let works = 0;
 let breaks = 0;
 let breaking = false;
@@ -104,35 +104,69 @@ function updateStats() {
     stats_break_time.innerHTML = msToTimeString(breaks * break_time + (total_ms_passed * Number(breaking)));
 }
 
-//update status display
-function updateStatus() {
+// state options
+function setStatus() {
+    //alert("setting status");
     switch (timer_status) {
         case 1:
-            $("#status").css("display", "block");
+            $('#status').css("display", "block");
             status_div.innerHTML = "Working";
             $('#status').css("animation-name", "elipses");
             $('#status').css("animation-duration", "0.5s");
+            $('#status').css("animation-delay", "0s");
             $('#status').addClass('elipses');
             break;
         case 2:
-            $("#status").css("display", "block");
+            $('#status').css("display", "block");
             status_div.innerHTML = "Breaking";
             $('#status').css("animation-name", "bounce");
             $('#status').css("animation-duration", "0.5s");
+            $('#status').css("animation-delay", "0s");
             $('#status').removeClass('elipses');
             break;
         case 3:
-            $("#status").css("display", "block");
+            $('#status').css("display", "block");
             status_div.innerHTML = "Paused";
             $('#status').css("animation-name", "flash");
             $('#status').css("animation-duration", "1s");
+            $('#status').css("animation-delay", "0.5s");
             $('#status').removeClass('elipses');
             break;
-        default: 
-            $("#status").css("display", "none");
+        default:
+            $('#status').slideUp();
+            //$('#status').css("display", "none");
             $('#status').removeClass('elipses');
             break;
     }
+    statusFadeIn();
+}
+
+function statusFadeOut() {
+    //alert("fading out");
+    let fadeout_interval = setInterval( () => {
+        let op = Number(status_div.style.opacity);
+        if (op <= 0) {
+            clearInterval(fadeout_interval);
+            setStatus();
+        }
+        status_div.style.opacity = (op - 0.01).toString();
+    }, 5);
+}
+
+function statusFadeIn() {
+    //alert("fading in");
+    let fadein_interval = setInterval( () => {
+        let op = Number(status_div.style.opacity);
+        if (op >= 1) {
+            clearInterval(fadein_interval);
+        }
+        status_div.style.opacity = (op + 0.01).toString();
+    }, 5);
+}
+
+//update status display
+function updateStatus() {
+    statusFadeOut();
 }
 
 
@@ -147,7 +181,10 @@ start_button.addEventListener('click', function() {
         timer_status = 3;
         updateStatus()
     }
-    else { 
+    else {
+        // if starting timer from scratch, slide in the status div
+        if (paused == false) { $('#status').slideDown(); }
+
         running = true;
         paused = false;
         start_button.innerHTML = "Pause";
@@ -175,16 +212,17 @@ reset_button.addEventListener('click', function() {
 
 // timer stats button
 timer_stats_button.addEventListener('click', function() {
+    $("#timer-stats").slideToggle();
+
     if (timer_stats_show == true) {
         timer_stats_show = false;
         timer_stats_button.innerHTML = "show stats";
-        $("#timer-stats").css("display", "none");
     }
     else {
         timer_stats_show = true;
         timer_stats_button.innerHTML = "hide stats";
-        $("#timer-stats").css("display", "block");
     }
+
 });
 
 
