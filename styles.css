@@ -14,12 +14,26 @@ main {
     height: 100%;
     padding: 0;
     margin: 0;
+    margin-right: 20rem;
     box-sizing: border-box;
     display:flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     /*border: 1px solid red;*/
+    transition: margin-right 1s;
+}
+.sidebar {
+    background-color: #000000b0;
+    width: 10rem;
+    display: inline;
+    z-index: 1;
+    position: fixed;
+    top: 0px;
+    right: 0px;
+}
+#settings {
+    width: 0rem;
 }
 
 #debug {
@@ -47,6 +61,7 @@ main {
     animation-direction: alternate;
     animation-timing-function: linear;
     position: relative;
+    transition: width 1s;
 }
 #status.elipses:after {
     content: "";
@@ -55,6 +70,7 @@ main {
     animation-iteration-count: infinite;
     animation-direction: normal;
     animation-timing-function: linear;
+    transition: width 1s;
 }
 
 #timer {
@@ -117,6 +133,31 @@ main {
     color: pink;
     transform: translateY(0);
 }
+#top-right {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.9rem;
+    padding: 0;
+    margin: 0;
+}
+#settings-button {
+    font-size: 3rem;
+    font-family: Lato, Arial;
+    background: none;
+    border: red solid 1px;
+    cursor: pointer;
+    color: #f0f0f1b6;
+    transition: all 1s;
+    padding: 0;
+    margin: 0;
+    vertical-align: middle;
+    line-height: 100%;
+}
+
+#settings-button:hover {
+    transform: rotate(200deg);
+}
+
 
 #timer-stats {
     font-family: Lato, Arial;

@@ -17,12 +17,36 @@ const stats_work_time = document.getElementById('work-time');
 const stats_break_sessions = document.getElementById('break-sessions');
 const stats_break_time = document.getElementById('break-time');
 const status_div = document.getElementById('status');
+const settings_button = document.getElementById('settings-button');
 
 // hide button focus styling on mouse up 
 // - (stops clicking button from creating focus styling but keeps accessibility)
 $('.timer-button').mouseup(function() {
     this.blur();
 });
+
+// object variables
+let timer_interval;
+
+// mechanical variables
+let start_time = Date.now();
+let current_time = Date.now();
+let saved_time = 0;
+let total_ms_passed = 0;
+let total_seconds_passed;
+let seconds;
+let minutes;
+let output;
+const work_time = 10 * 1000; // * 1000 for ms to seconds
+const break_time = 10 * 1000;
+let works = 0;
+let breaks = 0;
+let breaking = false;
+let running = false;
+let paused = false;
+let timer_stats_show = false;
+let timer_status = 0; // 0=none, 1=working, 2=breaking, 3=paused
+let settings_open = false;
 
 // audio - alerts
 function audioAlert(type) {
@@ -48,30 +72,6 @@ function audioAlert(type) {
     }
 }
 
-
-// object variables
-let timer_interval;
-
-// mechanical variables
-let start_time = Date.now();
-let current_time = Date.now();
-let saved_time = 0;
-let total_ms_passed = 0;
-let total_seconds_passed;
-let seconds;
-let minutes;
-let output;
-const work_time = 10 * 1000; // * 1000 for ms to seconds
-const break_time = 10 * 1000;
-let works = 0;
-let breaks = 0;
-let breaking = false;
-let running = false;
-let paused = false;
-let timer_stats_show = false;
-let timer_status = 0; // 0=none, 1=working, 2=breaking, 3=paused
-
-
 // need to run after updating "works" or "breaks"
 function updateTimeVariables() {
     work_time_current = work_time * works;
@@ -95,6 +95,27 @@ function msToTimeString(ms) {
     let hours_value = Math.floor( (ms / (1000 * 60 * 60)) % 60 );
     return String(hours_value) + "h " + String(minutes_value) + "m " + String(seconds_value) + "s";
 }
+
+// settings sidebar
+function openSettings() {
+    document.getElementById("settings").style.width = "25rem";
+    document.getElementById("main").style.marginRight = "50rem";
+}
+function closeSettings() {
+    document.getElementById("settings").style.width = "0";
+    document.getElementById("main").style.marginRight = "0";
+}
+settings_button.addEventListener('click', function() {
+    if (settings_open == true) {
+        settings_open = false;
+        closeSettings();
+    }
+    else {
+        settings_open = true;
+        openSettings();
+        
+    }
+})
 
 // update stats display
 function updateStats() {
@@ -272,6 +293,6 @@ function timerTick() {
 
 // debugging
 const debug_interval = setInterval(function() {
-    debug.innerHTML = "works: " + works + " | breaks: " + breaks + " | breaking: " + breaking + " | running: " + running + " | saved_time: " + saved_time + " | total_ms_passed: " + total_ms_passed;
+    debug.innerHTML = "works: " + works + " | breaks: " + breaks + " | breaking: " + breaking + " | running: " + running + " | saved_time: " + saved_time + " | total_ms_passed: " + total_ms_passed + " | settings_open: " + settings_open;
 }
 , 100)

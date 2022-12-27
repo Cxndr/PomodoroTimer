@@ -3,6 +3,7 @@
  - Count up, not down. Counting down encourages looking forward to finishing ("i have this much time left"). Counting up encourages looking at what you've accomplished so far ("i have worked this long").
  - Minutes and seconds only. No milliseconds. Milliseconds are stressful and if in sight can make anxious about time ticking (seconds to a lesser extent too but a compramise has to be made). Hours aren't needed because a pomodoro period should be a couple hours at absolute maximum.
  - Alert sounds have multiple recordings for each sound. Method to combat audio fatique (sounds becoming irritating and boring after hearing too many times).
+ - Trying to do as much as reasonable manually, without extensive libraries or templates. Using css, javascript and jquery. Purely for learning purposes to get a more fundamental knowledge of aspects of the languages.
 
 **** Ideas ****
 
@@ -13,5 +14,6 @@
  - do local storage for keeping track of stats (daily, weekly, monthly, session time, etc.)
  - make status "working..." and "breaking" animated. maybe flash for paused, bounce for breaking and extend ... for working.
  - animate "show stats" button: have background wipe in from top and then fade in text once its done.
-
+    - instead of extending elipses (too distracting, extends box) have 3 large elipses below the status box that each fade in 1 by 1.
+    
 

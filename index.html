@@ -4,6 +4,7 @@
         <title>Pomodoro Timer</title>
         <link rel="stylesheet" href="styles.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato|Roboto|Open+Sans">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -14,6 +15,7 @@
     </head>
     <body>
         <div id="debug">debugging inactive</div>
+        <div id="top-right"><button id="settings-button"><i class="icon-cog"></i></button></div>
         <main>
             <div id="status">Working...</div>
             <div id="timer">
@@ -33,8 +35,15 @@
                 </dl>
             </div>
         </main>
+        <div class="sidebar" id="settings">
+            <header>Settings</header>
+            </hr>
+            <form id="settings-form" action="#">
+                <label>Work Time: </label>
+                <input id="settings-worktime" name="worktime" type="text" class="form-control required">
+            </form>
+        </div>
         <script src="timer.js"></script>
     </body>
 </html>
-
 
