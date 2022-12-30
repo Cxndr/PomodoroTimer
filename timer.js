@@ -1,13 +1,16 @@
 window.onload = function() {
 }
 
+// mechanical functions
 function padTo2Digits(num) {
     return num.toString().padStart(2,"0");
 }
 
+
+// ******************* //TIMER *******************//
+
 // get elements
 const timer_text = document.getElementById('timer-text');
-const debug = document.getElementById('debug');
 const start_button = document.getElementById('start-button');
 const reset_button = document.getElementById('reset-button');
 const timer_buttons = document.getElementsByClassName('timer-button');
@@ -17,7 +20,6 @@ const stats_work_time = document.getElementById('work-time');
 const stats_break_sessions = document.getElementById('break-sessions');
 const stats_break_time = document.getElementById('break-time');
 const status_div = document.getElementById('status');
-const settings_button = document.getElementById('settings-button');
 
 // hide button focus styling on mouse up 
 // - (stops clicking button from creating focus styling but keeps accessibility)
@@ -25,10 +27,16 @@ $('.timer-button').mouseup(function() {
     this.blur();
 });
 
-// object variables
-let timer_interval;
+// settings variables
+let work_time = 10 * 1000; // * 1000 for seconds to ms
+let break_time = 10 * 1000;
+let work_playlist = "";
+let break_playlist = "";
+let sfx_volume = 60;
+let music_volume = 40;
 
 // mechanical variables
+let timer_interval;
 let start_time = Date.now();
 let current_time = Date.now();
 let saved_time = 0;
@@ -37,8 +45,6 @@ let total_seconds_passed;
 let seconds;
 let minutes;
 let output;
-const work_time = 10 * 1000; // * 1000 for ms to seconds
-const break_time = 10 * 1000;
 let works = 0;
 let breaks = 0;
 let breaking = false;
@@ -57,19 +63,16 @@ function audioAlert(type) {
     switch(type) {
         case 0: // break alert
             file_path = "/sound/hi/1/" + random_alert_string + ".wav";
-            audio_alert = new Audio(file_path);
-            audio_alert.play();
             break;
-        
         case 1: // work alert
             file_path = "/sound/hi/3/" + random_alert_string + ".wav";
-            audio_alert = new Audio(file_path);
-            audio_alert.play();
             break;
-        
         default:
             break;
     }
+    audio_alert = new Audio(file_path);
+    audio_alert.volume = sfx_volume / 100;
+    audio_alert.play();
 }
 
 // need to run after updating "works" or "breaks"
@@ -95,27 +98,13 @@ function msToTimeString(ms) {
     let hours_value = Math.floor( (ms / (1000 * 60 * 60)) % 60 );
     return String(hours_value) + "h " + String(minutes_value) + "m " + String(seconds_value) + "s";
 }
-
-// settings sidebar
-function openSettings() {
-    document.getElementById("settings").style.width = "25rem";
-    document.getElementById("main").style.marginRight = "50rem";
+function hmsToMs(hours, mins, secs) {
+    let hours_in_ms = hours * 60 * 60 * 1000;
+    let mins_in_ms = mins * 60 * 1000;
+    let secs_in_ms = secs * 1000;
+    let ms = hours_in_ms + mins_in_ms + secs_in_ms;
+    return ms;
 }
-function closeSettings() {
-    document.getElementById("settings").style.width = "0";
-    document.getElementById("main").style.marginRight = "0";
-}
-settings_button.addEventListener('click', function() {
-    if (settings_open == true) {
-        settings_open = false;
-        closeSettings();
-    }
-    else {
-        settings_open = true;
-        openSettings();
-        
-    }
-})
 
 // update stats display
 function updateStats() {
@@ -246,7 +235,6 @@ timer_stats_button.addEventListener('click', function() {
 
 });
 
-
 // timer interval
 function timerTick() {
 
@@ -285,13 +273,102 @@ function timerTick() {
             updateStatus()
         }
     }
-
     printOutput()
+}
+
+// ******************* //TIMER - END *******************//
+
+
+
+
+
+
+
+// ******************* //SETTINGS *******************//
+
+// get elements
+const settings_open_button = document.getElementById('settings-button');
+const settings_form = document.getElementById('settings-form');
+
+// settings sidebar
+function openSettings() {
+    document.getElementById("settings").style.width = "35rem";
+    document.getElementsByTagName("main")[0].style.marginLeft = "35rem";
+    document.getElementById("sidebar-content").style.transition = "opacity 1.5s";
+    document.getElementById("sidebar-content").style.transitionDelay = "0.8s";
+    document.getElementById("sidebar-content").style.opacity = "1";
+    setTimeout(function() { document.getElementById("settings").style.overflow = "auto"; }, 750);
+}
+
+function closeSettings() {
+    document.getElementById("settings").style.width = "0";
+    document.getElementsByTagName("main")[0].style.marginLeft = "0";
+    document.getElementById("sidebar-content").style.transition = "opacity 0.15s";
+    document.getElementById("sidebar-content").style.transitionDelay = "0s";
+    document.getElementById("sidebar-content").style.opacity = "0";
+    document.getElementById("settings").style.overflow = "hidden";
+}
+
+settings_open_button.addEventListener('click', function() {
+    if (settings_open == true) {
+        settings_open = false;
+        closeSettings();
+    }
+    else {
+        settings_open = true;
+        openSettings();
+    }
+})
+
+// settings form
+settings_save_msg = document.getElementById('settings-save-msg');
+
+function settingsRetrieveInputs() {
+
+    let worktime_hours = document.getElementById('settings-worktime-hours').value;
+    let worktime_mins = document.getElementById('settings-worktime-mins').value;
+    let worktime_secs = document.getElementById('settings-worktime-secs').value;
+
+    let breaktime_hours = document.getElementById('settings-breaktime-hours').value;
+    let breaktime_mins = document.getElementById('settings-breaktime-mins').value;
+    let breaktime_secs = document.getElementById('settings-breaktime-secs').value;
+    
+    work_time = hmsToMs(worktime_hours, worktime_mins, worktime_secs);
+    break_time = hmsToMs(breaktime_hours, breaktime_mins, breaktime_secs);
+
+    work_playlist = document.getElementById('settings-work-playlist').value;
+    break_playlist = document.getElementById('settings-break-playlist').value;
+
+    sfx_volume = document.getElementById('settings-volume-sfx').value;
+    music_volume = document.getElementById('settings-volume-music').value;
 
 }
 
+settings_form.addEventListener('submit', function(event) {
+    
+    event.preventDefault();
+
+    settingsRetrieveInputs();
+
+    settings_save_msg.style.display = "block";
+    settings_save_msg.style.animation = "5s linear 0.3s fade-in-hold";
+
+});
+
+settings_save_msg.addEventListener('animationend', function() {
+    settings_save_msg.style.display = "none";
+});
+
+// ******************* //SETTINGS - END *******************//
+
+
+
+
+
+
 
 // debugging
+const debug = document.getElementById('debug');
 const debug_interval = setInterval(function() {
     debug.innerHTML = "works: " + works + " | breaks: " + breaks + " | breaking: " + breaking + " | running: " + running + " | saved_time: " + saved_time + " | total_ms_passed: " + total_ms_passed + " | settings_open: " + settings_open;
 }

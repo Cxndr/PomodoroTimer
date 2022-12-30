@@ -17,3 +17,7 @@
     - instead of extending elipses (too distracting, extends box) have 3 large elipses below the status box that each fade in 1 by 1.
     
 
+**** ToDo ****
+
+ - settings save button: add css on click down state (feels more like its been clicked)
+ - settings save button: have greyed out until user has actually changed a setting.

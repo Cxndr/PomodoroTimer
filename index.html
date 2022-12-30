@@ -4,19 +4,19 @@
         <title>Pomodoro Timer</title>
         <link rel="stylesheet" href="styles.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato|Roboto|Open+Sans">
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
         <link rel="manifest" href="/site.webmanifest">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://kit.fontawesome.com/3b38c3db75.js" crossorigin="anonymous"></script>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
         <div id="debug">debugging inactive</div>
-        <div id="top-right"><button id="settings-button"><i class="icon-cog"></i></button></div>
         <main>
+            <div id="top-right"><button id="settings-button"><i class="fa-solid fa-gear"></i></button></div>
             <div id="status">Working...</div>
             <div id="timer">
                 <div id="timer-text">0:00</div>
@@ -36,14 +36,63 @@
             </div>
         </main>
         <div class="sidebar" id="settings">
-            <header>Settings</header>
-            </hr>
-            <form id="settings-form" action="#">
-                <label>Work Time: </label>
-                <input id="settings-worktime" name="worktime" type="text" class="form-control required">
-            </form>
+            <div id="sidebar-content">
+                <header>Settings</header>
+                <form id="settings-form">
+                    <fieldset>
+                        <legend>Work Time: </legend>
+                        <div class="centered-inputs">
+                            <div class="time-control-div">
+                                <label for="worktime-hours" class="time-control-label">hours</label>
+                                <input id="settings-worktime-hours" name="worktime-hours" class="form-control time-control required" type="number" value="0" min="0" max="24">
+                            </div>
+                            <div class="time-control-div">
+                                <label for="worktime-mins" class="time-control-label">mins</label>
+                                <input id="settings-worktime-mins" name="worktime-mins" class="form-control time-control required" type="number" value="25" min="0" max="60">
+                            </div>
+                            <div class="time-control-div">
+                                <label for="worktime-secs" class="time-control-label">secs</label>
+                                <input id="settings-worktime-secs" name="worktime-secs" class="form-control time-control required" type="number" value="0" min="0" max="60">
+                            </div>
+                        </div>
+                    </fieldset>
+                
+                    <fieldset class="inline-fieldset">
+                        <legend>Break Time: </legend>
+                        <div class="centered-inputs">
+                            <div class="time-control-div">
+                                <label for="breaktime-hours" class="time-control-label">hours</label>
+                                <input id="settings-breaktime-hours" name="breaktime-hours" class="form-control time-control required" type="number" value="0" min="0" max="24">
+                            </div>
+                            <div class="time-control-div">
+                                <label for="breaktime-mins" class="time-control-label">mins</label>
+                                <input id="settings-breaktime-mins" name="breaktime-mins" class="form-control time-control required" type="number" value="5" min="0" max="60">
+                            </div>
+                            <div class="time-control-div">
+                                <label for="breaktime-secs" class="time-control-label">secs</label>
+                                <input id="settings-breaktime-secs" name="breaktime-secs" class="form-control time-control required" type="number" value="0" min="0" max="60">
+                            </div>
+                        </div>
+                    </fieldset>
+                
+                    <label for="work-playlist">Work Playlist: </label>
+                    <input id="settings-work-playlist" name="work-playlist" class="form-control playlist-control required" type="url" placeholder="enter youtube playlist link">
+
+                    <label for="break-playlist">Break Playlist: </label>
+                    <input id="settings-break-playlist" name="break-playlist" class="form-control playlist-control required" type="url" placeholder="enter youtube playlist link">
+
+                    <label for="sfx-volume">SFX Volume: </label>
+                    <input id="settings-volume-sfx" name="sfx-volume" class="form-control volume-control required" type="range" min="0" max = "100" value="80">
+
+                    <label for="music-volume">Music Volume: </label>
+                    <input id="settings-volume-music" name="music-volume" class="form-control volume-control required" type="range" min="0" max = "100" value="70">
+                    <div id="settings-save-msg">Settings Saved!</div>
+                    <button id="settings-save-button" type="submit">Save</button>
+
+                </form>
+            </div>
         </div>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" ></iframe>
         <script src="timer.js"></script>
     </body>
 </html>
-

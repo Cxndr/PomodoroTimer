@@ -1,10 +1,20 @@
+:root {
+    --offwhite: rgb(240, 240, 240);
+    --offerwhite: rgb(200,200,200);
+    --offblack: rgb(30,30,30);
+    --offerblack: rgb(35,35,35);
+    --charcoal: rgb(50,50,50);
+    --softerpink: rgb(230, 180, 188);
+    --softpink: pink;
+}
+
 body, html {
     height: 100%;
     width: 100%;
     box-sizing: border-box;
     padding: 0;
     margin: 0;
-    background-color: pink;
+    background-color: var(--softpink);
     background-image: url("/img/bg/2.jpg");
     background-position: center;
     background-size: cover;
@@ -14,31 +24,206 @@ main {
     height: 100%;
     padding: 0;
     margin: 0;
-    margin-right: 20rem;
     box-sizing: border-box;
     display:flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     /*border: 1px solid red;*/
-    transition: margin-right 1s;
+    transition: margin-left 1s;
+    position: relative;
 }
+
+#top-right {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+}
+
 .sidebar {
     background-color: #000000b0;
-    width: 10rem;
-    display: inline;
+    width: 0rem; /* set in js on toggle */
+    height: 100%;
     z-index: 1;
     position: fixed;
     top: 0px;
-    right: 0px;
+    left: 0px;
+    overflow: hidden;
+    transition: width 1s;
+}
+#sidebar-content::-webkit-scrollbar {
+    background-color: #FFFFFF00;
+    width: 18px;
+    transition: opacity 1.5s; /* set in js */
+    transition-delay: 0.5s; /* set in js */
+    opacity: 1; /* set in js */
+}
+#sidebar-content::-webkit-scrollbar-thumb {
+    border: 6px solid #00000000;
+    background-clip: padding-box;
+    background-color: var(--offwhite);
+    border-radius: 20px;
+    
+}
+#sidebar-content {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    transition: opacity 1.5s; /* set in js */
+    transition-delay: 0.5s; /* set in js */
+    opacity: 0;  /* set in js */
+    color: white;
+    font-size: 1.75rem;
+    font-family: Lato, Arial, Helvetica, sans-serif;
+    padding: 1rem 2.5rem;
+    white-space: nowrap;
+    overflow:auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--offwhite) #00000000;
+}
+#sidebar-content header {
+    text-align: center;
+    padding-bottom: 0.7rem;
+    font-size: 2.5rem;
+    font-weight: 600;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    letter-spacing: 0.1rem;
+    border-bottom: 1px solid var(--offerwhite);
+}
+#sidebar-content form {
+    padding-top: 1.5rem;
+    text-align: center;
+}
+#sidebar-content input {
+    box-sizing: border-box;
+    font-size: 1rem;
+    margin-top: 0.2rem;
+    padding: 0.3rem;
+    display: block;
+    border-radius: 0.25rem;
+    border: none;
+    background-color:var(--offwhite);
+    text-align: center;
+}
+#sidebar-content label {
+    display: block;
+    margin-top: 1.8rem;
+    padding-bottom: 0.5rem;
+}
+#sidebar-content .time-control {
+    width: 3.5rem;
+}
+#sidebar-content .playlist-control {
+    width: 100%;
+}
+#sidebar-content .volume-control {
+    width: 100%;
+}
+#sidebar-content fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 0.5rem;
+}
+.centered-inputs {
+    display: inline-block;
+}
+#sidebar-content legend {
+    padding-top: 1rem;
+}
+#sidebar-content .time-control-label, .time-control {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+#sidebar-content .time-control-div {
+    float: left;
+}
+#sidebar-content .time-control-label {
+    font-size: 1rem;
+    padding-bottom: 0.2rem;
+    padding-top: 0.2rem;
+    margin-top: 0;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.607);
+}
+#sidebar-content .time-control{
+    margin: 0 0.5rem;
+    font-size: 1.3rem;
+}
+#sidebar-content button {
+    font-size: 2rem;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: rgba(0,0,0,0.02) 0 1px 3px 0;
+    color: var(--charcoal);
+    background-color: var(--offwhite);
+    cursor: pointer;
+    transition: all 250ms;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+#sidebar-content button:hover {
+    /*border-color: rgba(0,0,0,0.15);*/
+    box-shadow: rgba(0,0,0,0.9) 0 0.5rem 1rem;
+    color: rgba(0, 0, 0, 0.85);
+    outline: 0 !important;
+    transform: translateY(-1px);
+}
+#sidebar-content button:focus {
+    border-color: rgba(0,0,0,0.15);
+    outline:auto;
+}
+#sidebar-content button:active {
+    background-color: #ffffff;
+    border-color: rgba(0,0,0,0.15);
+    box-shadow: rgba(0,0,0,0.06) 0 2px 4px;
+    transform: translateY(0);
 }
 #settings {
     width: 0rem;
+}
+#settings-save-button {
+    padding: 0.35rem 1rem;;
+    margin: 3.5rem auto 2rem auto;
+}
+#settings-save-msg {
+    font-size: 1.2rem;
+    color: var(--offerwhite);
+    opacity: 0;
+    display: none;
+    float: left;
+    width: 100%;
+    height: 0;
+    position: relative;
+    top: 1.2rem;
+}
+#settings-button {
+    font-size: 3rem;
+    font-family: Lato, Arial;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #f0f0f1b6;
+    transition: transform 0.75s, color 0.5s;
+    padding: 0;
+    margin: 0;
+    vertical-align: middle;
+    line-height: 100%;
+    position: fixed;
+}
+#settings-button:hover {
+    transform: rotate(200deg) scale(1.1);
+    color:#f2f2f4e7;
 }
 
 #debug {
     position: absolute;
     top: 0.5rem;
+    right: 0.5rem;
     padding: 0rem 0.7rem;
     font-size: 20px;
     font-weight: bold;
@@ -50,7 +235,7 @@ main {
     display: none;
     background-color: rgba(30,30,30,0.3);
     border-radius: 0.4rem;
-    color: rgb(230,230,230);
+    color: var(--offwhite);
     font-family: Lato, sans-serif;
     font-size: 2.5rem;
     padding: 0.4rem 0.8rem 0.5rem 0.8rem;
@@ -77,7 +262,6 @@ main {
     background-color: rgba(20,20,20,0);
     /*border: 1px solid blue;*/
     transition: transform 1s;
-
 }
 
 #timer-text {
@@ -85,7 +269,7 @@ main {
     background-color: rgba(255,192,203,0);
     text-align: center;
     font-size: 18rem;
-    line-height: 18rem;
+    line-height: 17.8rem;
     font-family: Lato, 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', sans-serif;
     text-align: center;
     padding: 0rem 1.75rem;
@@ -116,46 +300,20 @@ main {
 .timer-button:hover {
     border-color: rgba(0,0,0,0.15);
     box-shadow: rgba(0,0,0,0.4) 0 0.5rem 2rem;
-    color: rgb(230, 180, 188);
+    color: var(--softerpink);
     outline: 0 !important;
+    transform: translateY(-1px);
 }
 .timer-button:focus {
     border-color: rgba(0,0,0,0.15);
     outline:auto;
 }
-.timer-button:hover {
-    transform: translateY(-1px);
-}
 .timer-button:active {
-    background-color: #F0F0F1;
+    background-color: var(--offwhite);
     border-color: rgba(0,0,0,0.15);
     box-shadow: rgba(0,0,0,0.06) 0 2px 4px;
-    color: pink;
+    color: var(--softpink);
     transform: translateY(0);
-}
-#top-right {
-    position: absolute;
-    top: 0.7rem;
-    right: 0.9rem;
-    padding: 0;
-    margin: 0;
-}
-#settings-button {
-    font-size: 3rem;
-    font-family: Lato, Arial;
-    background: none;
-    border: red solid 1px;
-    cursor: pointer;
-    color: #f0f0f1b6;
-    transition: all 1s;
-    padding: 0;
-    margin: 0;
-    vertical-align: middle;
-    line-height: 100%;
-}
-
-#settings-button:hover {
-    transform: rotate(200deg);
 }
 
 
@@ -173,7 +331,7 @@ main {
 
 #timer-stats-button {
     text-align: center;
-    color: rgb(200,200,200);
+    color: var(--offerwhite);
     font-size: 1.3rem;
     font-family: "Roboto", sans-serif;
     font-weight: 500;
@@ -228,7 +386,7 @@ main {
     margin: 0.1rem;
 }
 #timer-stats b {
-    font-weight: semibold;
+    font-weight: 600;
 }
 
 
@@ -249,4 +407,11 @@ main {
     25% { content: "."; }
     50% { content: ".."; }
     75% { content: "..."; }
+}
+
+@keyframes fade-in-hold {
+    0% { opacity: 0; }
+    4% { opacity: 1; }
+    60% { opacity: 1; }
+    100% { opacity: 0; }
 }
