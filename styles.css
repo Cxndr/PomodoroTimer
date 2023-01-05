@@ -216,7 +216,7 @@ main {
     position: fixed;
 }
 #settings-button:hover {
-    transform: rotate(200deg) scale(1.1);
+    transform: rotate(208deg) scale(1.1);
     color:#f2f2f4e7;
 }
 
@@ -388,6 +388,10 @@ main {
 #timer-stats b {
     font-weight: 600;
 }
+#youtube-player {
+    background-color: red;
+}
+
 
 
 /* --- Animations --- */

@@ -284,6 +284,59 @@ function timerTick() {
 
 
 
+// ******************* //YOUTUBE PLAYER *******************//
+
+// load iframe player api asynchronously
+player_element = document.createElement('script');
+player_element.src = "https://www.youtube.com/iframe_api";
+var first_script_element = document.getElementsByTagName('script')[0]; // we insert before any other script tags for async
+first_script_element.parentNode.insertBefore(player_element, first_script_element);
+
+// create iframe after api code is done downloading
+var youtube_player;
+function onYouTubeIframeAPIReady() {
+    youtube_player = new YT.Player('youtube-player', {
+        height: '390',
+        width: '640',
+        videoId: 'T9DgkCZoec8',
+        playerVars: {
+            'listType': 'playlist',
+            'list': 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i',
+            'loop': 1,
+            'autoplay': 1,
+            'playsinline': 1,
+            'modestbranding:': 1
+        },
+        events: {
+            'onReady': onPlayerReady,
+            'onError': onPlayerError,
+            'onStateChange': onPlayerStateChange
+        }
+        
+    });
+}
+
+function onPlayerReady(event) {
+    event.target.playVideo();
+}
+
+function onPlayerError() {
+    youtube_player.nextVideo();
+    // do we need to give feedback to user about what happened?
+}
+
+function onPlayerStateChange(event) {
+
+}
+
+// ******************* //YOUTUBE PLAYER - END *******************//
+
+
+
+
+
+
+
 // ******************* //SETTINGS *******************//
 
 // get elements
