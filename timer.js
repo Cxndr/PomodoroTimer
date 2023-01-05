@@ -53,6 +53,7 @@ let paused = false;
 let timer_stats_show = false;
 let timer_status = 0; // 0=none, 1=working, 2=breaking, 3=paused
 let settings_open = false;
+let current_playlist = "";
 
 // audio - alerts
 function audioAlert(type) {
@@ -256,6 +257,7 @@ function timerTick() {
             audioAlert(0);
             timer_status = 2;
             updateStatus()
+            updatePlaylist();
         }
     }
 
@@ -285,6 +287,24 @@ function timerTick() {
 
 
 // ******************* //YOUTUBE PLAYER *******************//
+
+function cleanPlaylist(link) {
+    cleaned_link = link.slice(link.indexof("&list=")+5, link.indexof("?", link.indexof("&list=")));
+    alert("foiuwefb");
+    alert(cleaned_link);
+    return cleaned_link;
+}
+
+function updatePlaylist() {
+    work_playlist = cleanPlaylist(work_playlist);
+    break_playlist = cleanPlaylist(break_playlist);
+    alert(work_playlist);
+    alert(break_playlist);
+    if (breaking == false) {
+        current_playlist = work_playlist;
+    }
+    else current_playlist = break_playlist;
+}
 
 // load iframe player api asynchronously
 player_element = document.createElement('script');
@@ -405,6 +425,8 @@ settings_form.addEventListener('submit', function(event) {
 
     settings_save_msg.style.display = "block";
     settings_save_msg.style.animation = "5s linear 0.3s fade-in-hold";
+
+    updatePlaylist();
 
 });
 
