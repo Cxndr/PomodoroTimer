@@ -16,6 +16,7 @@
  - animate "show stats" button: have background wipe in from top and then fade in text once its done.
     - instead of extending elipses (too distracting, extends box) have 3 large elipses below the status box that each fade in 1 by 1.
 - let people popout youtube embed into seperate window?
+- allow youtube playlist to continue from last played timestamp if new playlist hasnt been entered.
     
 
 **** ToDo ****

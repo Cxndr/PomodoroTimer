@@ -288,22 +288,27 @@ function timerTick() {
 
 // ******************* //YOUTUBE PLAYER *******************//
 
-function cleanPlaylist(link) {
-    cleaned_link = link.slice(link.indexof("&list=")+5, link.indexof("?", link.indexof("&list=")));
-    alert("foiuwefb");
-    alert(cleaned_link);
+function checkPlaylistLink(_link) {
+
+}
+
+function cleanPlaylist(_link) {
+    const start_pos = _link.indexOf("&list=")+6;
+    const end_pos = _link.indexOf("&", start_pos);
+    const cleaned_link = _link.slice(start_pos, end_pos);
     return cleaned_link;
 }
 
 function updatePlaylist() {
     work_playlist = cleanPlaylist(work_playlist);
     break_playlist = cleanPlaylist(break_playlist);
-    alert(work_playlist);
-    alert(break_playlist);
     if (breaking == false) {
         current_playlist = work_playlist;
     }
-    else current_playlist = break_playlist;
+    else {
+        current_playlist = break_playlist;
+    }
+    youtube_player.loadPlaylist(current_playlist);
 }
 
 // load iframe player api asynchronously
