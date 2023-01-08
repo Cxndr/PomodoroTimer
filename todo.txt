@@ -24,3 +24,4 @@
  - settings save button: add css on click down state (feels more like its been clicked)
  - settings save button: have greyed out until user has actually changed a setting.
  - BUG: sometimes when we click reset button the timer stops but the status doesnt get reset.
+ - add mute button in case using browser without mute tab

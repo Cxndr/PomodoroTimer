@@ -117,7 +117,6 @@ function updateStats() {
 
 // state options
 function setStatus() {
-    //alert("setting status");
     switch (timer_status) {
         case 1:
             $('#status').css("display", "block");
@@ -182,33 +181,38 @@ function updateStatus() {
 
 
 // play-pause button function
+function pauseTimer() {
+    running = false;
+    paused = true;
+    start_button.innerHTML = "Resume";
+    saved_time = total_ms_passed;
+    clearInterval(timer_interval);
+    timer_status = 3;
+    updateStatus()
+    youtube_player.pauseVideo();
+}
+function playTimer() {
+            if (paused == false) { $('#status').slideDown(); }
+            running = true;
+            paused = false;
+            start_button.innerHTML = "Pause";
+            start_time = Date.now() - saved_time;
+            timer_interval = setInterval(timerTick, 100);
+            if (breaking == false) {timer_status = 1;} else {timer_status = 2;}
+            updateStatus()
+            youtube_player.playVideo();
+}
 start_button.addEventListener('click', function() {
     if (running == true) {
-        running = false;
-        paused = true;
-        start_button.innerHTML = "Resume";
-        saved_time = total_ms_passed;
-        clearInterval(timer_interval);
-        timer_status = 3;
-        updateStatus()
+        pauseTimer();
     }
     else {
-        // if starting timer from scratch, slide in the status div
-        if (paused == false) { $('#status').slideDown(); }
-
-        running = true;
-        paused = false;
-        start_button.innerHTML = "Pause";
-        start_time = Date.now() - saved_time;
-        // triggers every 1000 milliseconds
-        timer_interval = setInterval(timerTick, 100);
-        if (breaking == false) {timer_status = 1;} else {timer_status = 2;}
-        updateStatus()
+        playTimer();
     }
 });
 
 // reset button
-reset_button.addEventListener('click', function() {
+function resetTimer() {
     clearInterval(timer_interval);
     running = false;
     paused = false;
@@ -218,7 +222,10 @@ reset_button.addEventListener('click', function() {
     updateStatus()
     printOutput();
     start_button.innerHTML = "Start";
-
+    youtube_player.pauseVideo();
+}
+reset_button.addEventListener('click', function() {
+    resetTimer();
 });
 
 // timer stats button
@@ -306,7 +313,18 @@ function updatePlaylist() {
     else {
         current_playlist = break_playlist;
     }
-    youtube_player.loadPlaylist(cleanPlaylist(current_playlist));
+    youtube_player.loadPlaylist({ // works here: http://jsfiddle.net/6aq15cdL/9/ ????????????????
+        list: 'PLUdAMlZtaV11U9AtszkMh0bpRqM4dtlDC',
+        index: 7
+      });
+    alert(youtube_player.getPlaylist());
+    /*
+    youtube_player.loadPlaylist({
+        list: //cleanPlaylist(current_playlist)
+        index: 1
+    });
+    */
+
 }
 
 // load iframe player api asynchronously
@@ -326,7 +344,7 @@ function onYouTubeIframeAPIReady() {
             'listType': 'playlist',
             'list': 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i',
             'loop': 1,
-            'autoplay': 1,
+            'autoplay': 0,
             'playsinline': 1,
             'modestbranding:': 1
         },
@@ -335,12 +353,11 @@ function onYouTubeIframeAPIReady() {
             'onError': onPlayerError,
             'onStateChange': onPlayerStateChange
         }
-        
     });
 }
 
 function onPlayerReady(event) {
-    event.target.playVideo();
+    //event.target.pauseVideo();
 }
 
 function onPlayerError() {

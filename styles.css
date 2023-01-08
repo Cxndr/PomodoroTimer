@@ -390,6 +390,7 @@ main {
 }
 #youtube-player {
     background-color: red;
+    float: right;
 }
 
 
