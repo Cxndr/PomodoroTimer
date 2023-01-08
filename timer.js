@@ -300,15 +300,13 @@ function cleanPlaylist(_link) {
 }
 
 function updatePlaylist() {
-    work_playlist = cleanPlaylist(work_playlist);
-    break_playlist = cleanPlaylist(break_playlist);
     if (breaking == false) {
         current_playlist = work_playlist;
     }
     else {
         current_playlist = break_playlist;
     }
-    youtube_player.loadPlaylist(current_playlist);
+    youtube_player.loadPlaylist(cleanPlaylist(current_playlist));
 }
 
 // load iframe player api asynchronously
