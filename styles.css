@@ -391,6 +391,11 @@ main {
 #youtube-player {
     background-color: red;
     float: right;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32rem;
+    height: 18rem;
 }
 
 

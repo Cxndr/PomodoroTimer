@@ -25,3 +25,4 @@
  - settings save button: have greyed out until user has actually changed a setting.
  - BUG: sometimes when we click reset button the timer stops but the status doesnt get reset.
  - add mute button in case using browser without mute tab
+ - validate if playlist entered is public or private (just wont load if private - no player onError)

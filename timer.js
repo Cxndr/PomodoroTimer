@@ -302,10 +302,14 @@ function checkPlaylistLink(_link) {
 function cleanPlaylist(_link) {
     const start_pos = _link.indexOf("&list=")+6;
     const end_pos = _link.indexOf("&", start_pos);
+    if (end_pos < 0) { end_pos = _link.length};
     const cleaned_link = _link.slice(start_pos, end_pos);
     return cleaned_link;
 }
 
+// when loading to a video in the playlist that is unavailable 
+// (only watchable on youtube, not available in coutnry) the playlist will not be loaded at all
+// and therefore no onError will be triggered.
 function updatePlaylist() {
     if (breaking == false) {
         current_playlist = work_playlist;
@@ -313,18 +317,28 @@ function updatePlaylist() {
     else {
         current_playlist = break_playlist;
     }
-    youtube_player.loadPlaylist({ // works here: http://jsfiddle.net/6aq15cdL/9/ ????????????????
-        list: 'PLUdAMlZtaV11U9AtszkMh0bpRqM4dtlDC',
-        index: 7
-      });
-    alert(youtube_player.getPlaylist());
+    //alert(cleanPlaylist(current_playlist).toString());
+    pl_load = youtube_player.loadPlaylist({
+        list: 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i', //cleanPlaylist(current_playlist).toString(),
+        index: 4
+    });
+    console.log(pl_load);
+    //  youtube_player.nextVideo();
+    
+    
+}
+
+// https://jsfiddle.net/u461nrt8/9/
+function testButton() {
+    //playlist_link = cleanPlaylist(current_playlist);
+    youtube_player.nextVideo();
+    // MAKE SURE TEST PLAYLISTS ARE PUBLIC!
     /*
     youtube_player.loadPlaylist({
-        list: //cleanPlaylist(current_playlist)
-        index: 1
+        index: 5,
+        list: cleanPlaylist(current_playlist),
     });
     */
-
 }
 
 // load iframe player api asynchronously
@@ -339,10 +353,10 @@ function onYouTubeIframeAPIReady() {
     youtube_player = new YT.Player('youtube-player', {
         height: '390',
         width: '640',
-        videoId: 'T9DgkCZoec8',
+        videoId: 'yDzPeZkhm7U',
         playerVars: {
-            'listType': 'playlist',
-            'list': 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i',
+            //'playlist': 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i',
+            //'list': 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i', // we comment out otherwise we need to run loadPlaylist twice to play provided playlist. Assuming this is queueing a playlist up already that must be played on first loadPlaylist();
             'loop': 1,
             'autoplay': 0,
             'playsinline': 1,
