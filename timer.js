@@ -53,7 +53,7 @@ let paused = false;
 let timer_stats_show = false;
 let timer_status = 0; // 0=none, 1=working, 2=breaking, 3=paused
 let settings_open = false;
-let current_playlist = "";
+let current_playlist = "https://www.youtube.com/playlist?list=PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i";
 
 // audio - alerts
 function audioAlert(type) {
@@ -300,8 +300,8 @@ function checkPlaylistLink(_link) {
 }
 
 function cleanPlaylist(_link) {
-    const start_pos = _link.indexOf("&list=")+6;
-    const end_pos = _link.indexOf("&", start_pos);
+    let start_pos = _link.indexOf("list=")+6;
+    let end_pos = _link.indexOf("&", start_pos);
     if (end_pos < 0) { end_pos = _link.length};
     const cleaned_link = _link.slice(start_pos, end_pos);
     return cleaned_link;
@@ -317,12 +317,19 @@ function updatePlaylist() {
     else {
         current_playlist = break_playlist;
     }
-    //alert(cleanPlaylist(current_playlist).toString());
+    /*
     pl_load = youtube_player.loadPlaylist({
         list: 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i', //cleanPlaylist(current_playlist).toString(),
-        index: 4
+        index: 15
     });
-    console.log(pl_load);
+    */
+   let cleaned_playlist = cleanPlaylist(current_playlist).toString();
+   //alert(cleanPlaylist(current_playlist).toString());
+   load_playlist = youtube_player.loadPlaylist({
+        list: cleanPlaylist(current_playlist).toString(),
+        index: 1
+   });
+    console.log(load_playlist);
     //  youtube_player.nextVideo();
     
     
@@ -331,7 +338,7 @@ function updatePlaylist() {
 // https://jsfiddle.net/u461nrt8/9/
 function testButton() {
     //playlist_link = cleanPlaylist(current_playlist);
-    youtube_player.nextVideo();
+    //youtube_player.nextVideo();
     // MAKE SURE TEST PLAYLISTS ARE PUBLIC!
     /*
     youtube_player.loadPlaylist({
@@ -339,6 +346,23 @@ function testButton() {
         list: cleanPlaylist(current_playlist),
     });
     */
+
+    alert(cleanPlaylist("https://www.youtube.com/playlist?list=PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i"));
+
+    
+    /*
+    let player_index = youtube_player.getPlaylistIndex();
+    let new_index = player_index + 1;
+    alert(player_index);
+    alert(new_index);
+    let new_list = cleanPlaylist(current_playlist).toString();
+    alert(new_list);
+    load_playlist = youtube_player.loadPlaylist({
+        list: new_list,
+        index: new_index // what if we are at the end?
+   }); 
+   */
+
 }
 
 // load iframe player api asynchronously
@@ -353,14 +377,15 @@ function onYouTubeIframeAPIReady() {
     youtube_player = new YT.Player('youtube-player', {
         height: '390',
         width: '640',
-        videoId: 'yDzPeZkhm7U',
+        //videoId: 'yDzPeZkhm7U',
         playerVars: {
-            //'playlist': 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i',
-            //'list': 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i', // we comment out otherwise we need to run loadPlaylist twice to play provided playlist. Assuming this is queueing a playlist up already that must be played on first loadPlaylist();
+            'playlist': 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i',
+            'list': 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i', // we comment out otherwise we need to run loadPlaylist twice to play provided playlist. Assuming this is queueing a playlist up already that must be played on first loadPlaylist();
+            'index': 17,
             'loop': 1,
             'autoplay': 0,
             'playsinline': 1,
-            'modestbranding:': 1
+            'modestbranding:': 1    
         },
         events: {
             'onReady': onPlayerReady,
@@ -374,8 +399,22 @@ function onPlayerReady(event) {
     //event.target.pauseVideo();
 }
 
-function onPlayerError() {
-    youtube_player.nextVideo();
+// what happens if we are skipping BACKWARDS through the videos and hit error?
+// atm we get stopped from going back any further as player will go to NEXT video
+//
+// error IS being triggered on initial load! (but initial video still doesnt skip).
+//https://stackoverflow.com/questions/18508433/automatically-skip-video-in-youtube-when-error-occurs-using-youtube-android-sdk
+
+function onPlayerError(event) {
+   let player_index = youtube_player.getPlaylistIndex();
+   let new_index = player_index + 1;
+   let playlist_string = cleanPlaylist(current_playlist).toString();
+   alert(playlist_string);
+   load_playlist = youtube_player.loadPlaylist({
+        list: playlist_string,
+        index: new_index // what if we are at the end?
+   });
+
     // do we need to give feedback to user about what happened?
 }
 
@@ -451,6 +490,7 @@ function settingsRetrieveInputs() {
 
 }
 
+// on submit
 settings_form.addEventListener('submit', function(event) {
     
     event.preventDefault();
