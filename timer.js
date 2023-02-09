@@ -388,7 +388,7 @@ function onPlayerError(event) {
     // loading playlist with next index works for initial video being unplayable
     alert("video playback error: " + event.data);
     
-        // when this code is included - we fail to skip when we have 2 videos unavailable in a row.
+        // when this load_playlist is included - we fail to skip when we have 2 videos unavailable in a row.
         // when the code is removed they skip just fine using nextVideo() alone.
         // but we need this code to skip when initial video is unavailable as nextVideo() doesnt do anything in that case.
         // this cose also works fine to skip to next in place of nextVideo() except the 2 unavailable videos in a row
@@ -408,13 +408,17 @@ function onPlayerError(event) {
     alert("player_index: " + player_index + "\nnew_index: " + new_index);
 
     youtube_player.nextVideo();
-
+    alert("preprepre");
     sleep(300);    
     alert("yruioyioqwyoriy");
-    load_playlist = youtube_player.loadPlaylist({
-        list: playlist_string,
-        index: new_index // what if we are at the end?
-    });
+    setTimeout( function() {
+        alert("pre timeout");
+        load_playlist = youtube_player.loadPlaylist({
+            list: playlist_string,
+            index: new_index // what if we are at the end?
+        });
+        alert("post timeout");
+    }, 300);
     alert("fieun"); 
     //playVideo();
     
