@@ -300,7 +300,7 @@ function checkPlaylistLink(_link) {
 }
 
 function cleanPlaylist(_link) {
-    let start_pos = _link.indexOf("list=")+6;
+    let start_pos = _link.indexOf("list=")+5;
     let end_pos = _link.indexOf("&", start_pos);
     if (end_pos < 0) { end_pos = _link.length};
     const cleaned_link = _link.slice(start_pos, end_pos);
@@ -308,8 +308,8 @@ function cleanPlaylist(_link) {
 }
 
 // when loading to a video in the playlist that is unavailable 
-// (only watchable on youtube, not available in coutnry) the playlist will not be loaded at all
-// and therefore no onError will be triggered.
+// (only watchable on youtube, not available in country) the playlist will not be loaded at all
+// and therefore no onError will be triggered. - is this true? seems like onerror is triggered but doesnt skip the video
 function updatePlaylist() {
     if (breaking == false) {
         current_playlist = work_playlist;
@@ -317,22 +317,13 @@ function updatePlaylist() {
     else {
         current_playlist = break_playlist;
     }
-    /*
-    pl_load = youtube_player.loadPlaylist({
-        list: 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i', //cleanPlaylist(current_playlist).toString(),
-        index: 15
-    });
-    */
    let cleaned_playlist = cleanPlaylist(current_playlist).toString();
-   //alert(cleanPlaylist(current_playlist).toString());
+   alert(cleaned_playlist);
    load_playlist = youtube_player.loadPlaylist({
-        list: cleanPlaylist(current_playlist).toString(),
+        list: cleaned_playlist,
         index: 1
    });
     console.log(load_playlist);
-    //  youtube_player.nextVideo();
-    
-    
 }
 
 // https://jsfiddle.net/u461nrt8/9/
@@ -340,28 +331,15 @@ function testButton() {
     //playlist_link = cleanPlaylist(current_playlist);
     //youtube_player.nextVideo();
     // MAKE SURE TEST PLAYLISTS ARE PUBLIC!
-    /*
-    youtube_player.loadPlaylist({
-        index: 5,
-        list: cleanPlaylist(current_playlist),
-    });
-    */
-
-    alert(cleanPlaylist("https://www.youtube.com/playlist?list=PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i"));
-
     
-    /*
-    let player_index = youtube_player.getPlaylistIndex();
-    let new_index = player_index + 1;
-    alert(player_index);
-    alert(new_index);
-    let new_list = cleanPlaylist(current_playlist).toString();
-    alert(new_list);
-    load_playlist = youtube_player.loadPlaylist({
-        list: new_list,
-        index: new_index // what if we are at the end?
-   }); 
-   */
+    let cleaned_pl = cleanPlaylist("https://www.youtube.com/playlist?list=PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i");
+    let cleaned = "PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i";
+    //alert("func out: " + cleaned_pl + "\ntext out: " + cleaned);
+
+    pl_load = youtube_player.loadPlaylist({
+        list: cleaned_pl, //cleanPlaylist(current_playlist).toString(),
+        index: 1 // onerror is not being triggered when we have an index for a video thats not playable, the player just doesnt load!
+    });
 
 }
 
@@ -381,7 +359,7 @@ function onYouTubeIframeAPIReady() {
         playerVars: {
             'playlist': 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i',
             'list': 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i', // we comment out otherwise we need to run loadPlaylist twice to play provided playlist. Assuming this is queueing a playlist up already that must be played on first loadPlaylist();
-            'index': 17,
+            'index': 1,
             'loop': 1,
             'autoplay': 0,
             'playsinline': 1,
@@ -397,6 +375,7 @@ function onYouTubeIframeAPIReady() {
 
 function onPlayerReady(event) {
     //event.target.pauseVideo();
+    alert("player ready event");
 }
 
 // what happens if we are skipping BACKWARDS through the videos and hit error?
@@ -404,22 +383,52 @@ function onPlayerReady(event) {
 //
 // error IS being triggered on initial load! (but initial video still doesnt skip).
 //https://stackoverflow.com/questions/18508433/automatically-skip-video-in-youtube-when-error-occurs-using-youtube-android-sdk
-
 function onPlayerError(event) {
-   let player_index = youtube_player.getPlaylistIndex();
-   let new_index = player_index + 1;
-   let playlist_string = cleanPlaylist(current_playlist).toString();
-   alert(playlist_string);
-   load_playlist = youtube_player.loadPlaylist({
+    // nextvideo() works for natural skipping to unavailable video
+    // loading playlist with next index works for initial video being unplayable
+    alert("video playback error: " + event.data);
+    
+        // when this code is included - we fail to skip when we have 2 videos unavailable in a row.
+        // when the code is removed they skip just fine using nextVideo() alone.
+        // but we need this code to skip when initial video is unavailable as nextVideo() doesnt do anything in that case.
+        // this cose also works fine to skip to next in place of nextVideo() except the 2 unavailable videos in a row
+        // we need either a way to differentiate initial and non-initial video skips or 
+        // a way for this code to not interfere with 2 unavailable videos in a row
+
+        // using this method of assigning to a specific index WILL NOT WORK AT ALL if the chose index is
+        // an unavailable video!!!!!!!!!!!! this is causing the problem here and when using load button
+        // to go to unavailable video. if we can get it to trigger onerror instead of doing nothing
+        // then we are good.
+        // when the loadPlaylist fails because unavailable index it also cancels the rest of the block of code
+
+
+    let player_index = youtube_player.getPlaylistIndex();
+    let new_index = player_index + 1;
+    let playlist_string = cleanPlaylist(current_playlist).toString();
+    alert("player_index: " + player_index + "\nnew_index: " + new_index);
+
+    youtube_player.nextVideo();
+
+    sleep(300);    
+    alert("yruioyioqwyoriy");
+    load_playlist = youtube_player.loadPlaylist({
         list: playlist_string,
         index: new_index // what if we are at the end?
-   });
+    });
+    alert("fieun"); 
+    //playVideo();
+    
+    
+    //youtube_player.loadPlaylist(playlist_string, new_index); // we have to use object version of loadPlaylist to make it skip when initial video is unavailable
+    sleep(300);
+    youtube_player.nextVideo();
+
 
     // do we need to give feedback to user about what happened?
 }
 
 function onPlayerStateChange(event) {
-
+    //alert("player state change event triggered");
 }
 
 // ******************* //YOUTUBE PLAYER - END *******************//
