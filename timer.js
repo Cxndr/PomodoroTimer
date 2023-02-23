@@ -192,15 +192,15 @@ function pauseTimer() {
     youtube_player.pauseVideo();
 }
 function playTimer() {
-            if (paused == false) { $('#status').slideDown(); }
-            running = true;
-            paused = false;
-            start_button.innerHTML = "Pause";
-            start_time = Date.now() - saved_time;
-            timer_interval = setInterval(timerTick, 100);
-            if (breaking == false) {timer_status = 1;} else {timer_status = 2;}
-            updateStatus()
-            youtube_player.playVideo();
+    if (paused == false) { $('#status').slideDown(); }
+    running = true;
+    paused = false;
+    start_button.innerHTML = "Pause";
+    start_time = Date.now() - saved_time;
+    timer_interval = setInterval(timerTick, 100);
+    if (breaking == false) {timer_status = 1;} else {timer_status = 2;}
+    updateStatus()
+    youtube_player.playVideo();
 }
 start_button.addEventListener('click', function() {
     if (running == true) {
@@ -384,9 +384,7 @@ function onPlayerReady(event) {
 // error IS being triggered on initial load! (but initial video still doesnt skip).
 //https://stackoverflow.com/questions/18508433/automatically-skip-video-in-youtube-when-error-occurs-using-youtube-android-sdk
 function onPlayerError(event) {
-    // nextvideo() works for natural skipping to unavailable video
-    // loading playlist with next index works for initial video being unplayable
-    alert("video playback error: " + event.data);
+    //alert("video playback error: " + event.data);
     
         // when this load_playlist is included - we fail to skip when we have 2 videos unavailable in a row.
         // when the code is removed they skip just fine using nextVideo() alone.
@@ -394,23 +392,22 @@ function onPlayerError(event) {
         // this cose also works fine to skip to next in place of nextVideo() except the 2 unavailable videos in a row
         // we need either a way to differentiate initial and non-initial video skips or 
         // a way for this code to not interfere with 2 unavailable videos in a row
-
         // using this method of assigning to a specific index WILL NOT WORK AT ALL if the chose index is
         // an unavailable video!!!!!!!!!!!! this is causing the problem here and when using load button
         // to go to unavailable video. if we can get it to trigger onerror instead of doing nothing
         // then we are good.
         // when the loadPlaylist fails because unavailable index it also cancels the rest of the block of code
+            // FINAL NOTE: I commented out the assign playlist with next index method in favour of nextVideo(). the only situation where nextVideo()
+            // doesnt work is when the page is initially loaded. as long as we always load the specific playlist when we want to start playing then 
+            // nextVideo will be sufficient. If we need in future it may be possible to use a variable to trigger nextVideo to get out of 2
+            // unavailable videos in a row.
 
+    youtube_player.nextVideo();
 
+    /* SKIPPING METHOD THAT WORKS ON PAGE LOAD - We don't need, just load the playlist with updatePlaylist when we want to start playing.
     let player_index = youtube_player.getPlaylistIndex();
     let new_index = player_index + 1;
     let playlist_string = cleanPlaylist(current_playlist).toString();
-    alert("player_index: " + player_index + "\nnew_index: " + new_index);
-
-    youtube_player.nextVideo();
-    alert("preprepre");
-    sleep(300);    
-    alert("yruioyioqwyoriy");
     setTimeout( function() {
         alert("pre timeout");
         load_playlist = youtube_player.loadPlaylist({
@@ -418,15 +415,9 @@ function onPlayerError(event) {
             index: new_index // what if we are at the end?
         });
         alert("post timeout");
-    }, 300);
-    alert("fieun"); 
-    //playVideo();
-    
-    
-    //youtube_player.loadPlaylist(playlist_string, new_index); // we have to use object version of loadPlaylist to make it skip when initial video is unavailable
-    sleep(300);
-    youtube_player.nextVideo();
-
+    }, 100);
+    */
+    //youtube_player.nextVideo();
 
     // do we need to give feedback to user about what happened?
 }
