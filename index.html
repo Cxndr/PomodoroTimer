@@ -16,7 +16,15 @@
     <body>
         <div id="debug">debugging inactive</div>
         <main>
-            <div id="top-right"><button id="settings-button"><i class="fa-solid fa-gear"></i></button></div>
+            <div class="top-left">
+                <div id="top-left-buttons">
+                    <button id="settings-button"><i class="fa-solid fa-gear"></i></button>
+                    <button id="media-display-button"><i class="fa-solid fa-tv"></i></button>
+                    <div id="media-display">
+                        <div id="youtube-player"></div> <!-- this div tag gets reaplced with an iframe tag in JS -->
+                    </div>
+                </div>
+            </div>
             <div id="status">Working...</div>
             <div id="timer">
                 <div id="timer-text">0:00</div>
@@ -93,7 +101,7 @@
                 </form>
             </div>
         </div>
-        <div id="youtube-player"></div> <!-- this div tag gets reaplced with an iframe tag in JS -->
+
         <script src="timer.js"></script>
     </body>
 </html>

@@ -34,10 +34,10 @@ main {
     position: relative;
 }
 
-#top-right {
+.top-left {
     position: absolute;
-    top: 1rem;
-    left: 1rem;
+    top: 0rem;
+    left: 0rem;
 }
 
 .sidebar {
@@ -201,23 +201,49 @@ main {
     position: relative;
     top: 1.2rem;
 }
-#settings-button {
+#top-left-buttons {
+    position: fixed;
+}
+#top-left-buttons button {
     font-size: 3rem;
     font-family: Lato, Arial;
     background: none;
     border: none;
     cursor: pointer;
     color: #f0f0f1b6;
-    transition: transform 0.75s, color 0.5s;
-    padding: 0;
-    margin: 0;
     vertical-align: middle;
     line-height: 100%;
-    position: fixed;
+    margin: 0.8rem 0rem 0rem 0.8rem;
+}
+#top-left-buttons #settings-button {
+    transition: transform 0.75s, color 0.5s;
 }
 #settings-button:hover {
     transform: rotate(208deg) scale(1.1);
     color:#f2f2f4e7;
+}
+#top-left-buttons #media-display-button {
+    font-size: 2.7rem;
+    margin-left: 0.3rem;
+    transition: transform 0.75s, color 0.5s;
+}
+#media-display-button:hover {
+    transform: scale(1.05);
+    color:#f2f2f4e7;
+}
+#media-display {
+    position: relative;
+    top: 0rem;
+    display: none;
+}
+#youtube-player {
+    background-color: red;
+    float: left;
+    position: relative;
+    top: 1rem;
+    left: 1rem;
+    width: 24rem;
+    height: 13.5rem; 
 }
 
 #debug {
@@ -387,15 +413,6 @@ main {
 }
 #timer-stats b {
     font-weight: 600;
-}
-#youtube-player {
-    background-color: red;
-    float: right;
-    position: absolute;
-    top: 2rem;
-    right: 1rem;
-    width: 32rem;
-    height: 18rem;
 }
 
 

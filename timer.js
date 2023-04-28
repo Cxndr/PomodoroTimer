@@ -31,8 +31,14 @@ $('.timer-button').mouseup(function() {
 let work_time = 10 * 1000; // * 1000 for seconds to ms
 let break_time = 10 * 1000;
 let work_playlist = "";
+work_playlist = "https://www.youtube.com/playlist?list=PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i";
+let work_playlist_lastplayed_timestamp = 0;
+let work_playlist_lastplayed_index = 0;
 let break_playlist = "";
-let sfx_volume = 60;
+break_playlist = "https://www.youtube.com/playlist?list=PLrQHJyrdiNuaU4E9erO20CFwhzSii7eam";
+let break_playlist_lastplayed_timestamp = 0;
+let break_playlist_lastplayed_index = 0;
+let sfx_volume = 5;
 let music_volume = 40;
 
 // mechanical variables
@@ -152,7 +158,6 @@ function setStatus() {
 }
 
 function statusFadeOut() {
-    //alert("fading out");
     let fadeout_interval = setInterval( () => {
         let op = Number(status_div.style.opacity);
         if (op <= 0) {
@@ -164,7 +169,6 @@ function statusFadeOut() {
 }
 
 function statusFadeIn() {
-    //alert("fading in");
     let fadein_interval = setInterval( () => {
         let op = Number(status_div.style.opacity);
         if (op >= 1) {
@@ -216,13 +220,15 @@ function resetTimer() {
     clearInterval(timer_interval);
     running = false;
     paused = false;
+    breaking = false;
     total_ms_passed = 0;
     saved_time = 0;
     timer_status = 0;
     updateStatus()
     printOutput();
     start_button.innerHTML = "Start";
-    youtube_player.pauseVideo();
+    updatePlaylist();
+
 }
 reset_button.addEventListener('click', function() {
     resetTimer();
@@ -279,7 +285,8 @@ function timerTick() {
             start_time = Date.now();
             audioAlert(1);
             timer_status = 1;
-            updateStatus()
+            updateStatus();
+            updatePlaylist();
         }
     }
     printOutput()
@@ -295,6 +302,22 @@ function timerTick() {
 
 // ******************* //YOUTUBE PLAYER *******************//
 
+// get elements
+const media_display_button = document.getElementById('media-display-button');
+const media_display = document.getElementById('media-display');
+
+let media_hidden = true;
+media_display_button.addEventListener('click', function() {
+    if (media_hidden == true) {
+        media_hidden = false;
+        media_display.style.display = "block";
+    }
+    else {
+        media_hidden = true;
+        media_display.style.display = "none";
+    }
+})
+
 function checkPlaylistLink(_link) {
 
 }
@@ -307,40 +330,60 @@ function cleanPlaylist(_link) {
     return cleaned_link;
 }
 
-// when loading to a video in the playlist that is unavailable 
-// (only watchable on youtube, not available in country) the playlist will not be loaded at all
-// and therefore no onError will be triggered. - is this true? seems like onerror is triggered but doesnt skip the video
 function updatePlaylist() {
+
+    let last_index = 0;
+    let last_timestamp = 0;
+
     if (breaking == false) {
         current_playlist = work_playlist;
+        break_playlist_lastplayed_index = youtube_player.getPlaylistIndex();
+        break_playlist_lastplayed_timestamp = youtube_player.getCurrentTime();
+        last_index = work_playlist_lastplayed_index;
+        last_timestamp = work_playlist_lastplayed_timestamp;
+
     }
     else {
         current_playlist = break_playlist;
+        work_playlist_lastplayed_index = youtube_player.getPlaylistIndex();
+        work_playlist_lastplayed_timestamp = youtube_player.getCurrentTime();
+        last_index = break_playlist_lastplayed_index;
+        last_timestamp = break_playlist_lastplayed_timestamp;
     }
-   let cleaned_playlist = cleanPlaylist(current_playlist).toString();
-   alert(cleaned_playlist);
-   load_playlist = youtube_player.loadPlaylist({
-        list: cleaned_playlist,
-        index: 1
-   });
-    console.log(load_playlist);
+
+    let cleaned_playlist = cleanPlaylist(current_playlist).toString();
+    youtube_player.stopVideo(); // yt embed api needs video to stop or loadPlaylist() will just restart old playlist
+    if (running == true) {
+        load_playlist = youtube_player.loadPlaylist({
+            list: cleaned_playlist,
+            listType: 'playlist',
+            index: last_index,
+            startSeconds: last_timestamp
+        });
+    }
+    else {
+        cue_playlist = youtube_player.cuePlaylist({
+            list: cleaned_playlist,
+            listType: 'playlist',
+            index: last_index,
+            startSeconds: last_timestamp
+        });
+    }
+    
+}
+
+function onPlaylistLoaded() {
+
 }
 
 // https://jsfiddle.net/u461nrt8/9/
 function testButton() {
-    //playlist_link = cleanPlaylist(current_playlist);
-    //youtube_player.nextVideo();
     // MAKE SURE TEST PLAYLISTS ARE PUBLIC!
-    
-    let cleaned_pl = cleanPlaylist("https://www.youtube.com/playlist?list=PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i");
-    let cleaned = "PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i";
-    //alert("func out: " + cleaned_pl + "\ntext out: " + cleaned);
-
+    let cleaned_playlist = cleanPlaylist("https://www.youtube.com/playlist?list=PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i");
     pl_load = youtube_player.loadPlaylist({
-        list: cleaned_pl, //cleanPlaylist(current_playlist).toString(),
-        index: 1 // onerror is not being triggered when we have an index for a video thats not playable, the player just doesnt load!
-    });
-
+        list: cleaned_playlist, //cleanPlaylist(current_playlist).toString(),
+        index: 0 // onerror is not being triggered when we have an index for a video thats not playable, the player just doesnt load!
+    }, null, onPlaylistLoaded);
 }
 
 // load iframe player api asynchronously
@@ -355,15 +398,14 @@ function onYouTubeIframeAPIReady() {
     youtube_player = new YT.Player('youtube-player', {
         height: '390',
         width: '640',
-        //videoId: 'yDzPeZkhm7U',
         playerVars: {
-            'playlist': 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i',
-            'list': 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i', // we comment out otherwise we need to run loadPlaylist twice to play provided playlist. Assuming this is queueing a playlist up already that must be played on first loadPlaylist();
-            'index': 1,
+            'list': 'PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i',
+            'index': 0,
             'loop': 1,
             'autoplay': 0,
             'playsinline': 1,
-            'modestbranding:': 1    
+            'modestbranding:': 1,
+            'origin': 'localhost:5501/'
         },
         events: {
             'onReady': onPlayerReady,
@@ -374,56 +416,25 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerReady(event) {
-    //event.target.pauseVideo();
-    alert("player ready event");
+    // youtube_player.playVideo(); // we want to control it on our own via start/pause button
+    //youtube_player.pauseVideo();
 }
 
-// what happens if we are skipping BACKWARDS through the videos and hit error?
-// atm we get stopped from going back any further as player will go to NEXT video
-//
-// error IS being triggered on initial load! (but initial video still doesnt skip).
-//https://stackoverflow.com/questions/18508433/automatically-skip-video-in-youtube-when-error-occurs-using-youtube-android-sdk
 function onPlayerError(event) {
-    //alert("video playback error: " + event.data);
-    
-        // when this load_playlist is included - we fail to skip when we have 2 videos unavailable in a row.
-        // when the code is removed they skip just fine using nextVideo() alone.
-        // but we need this code to skip when initial video is unavailable as nextVideo() doesnt do anything in that case.
-        // this cose also works fine to skip to next in place of nextVideo() except the 2 unavailable videos in a row
-        // we need either a way to differentiate initial and non-initial video skips or 
-        // a way for this code to not interfere with 2 unavailable videos in a row
-        // using this method of assigning to a specific index WILL NOT WORK AT ALL if the chose index is
-        // an unavailable video!!!!!!!!!!!! this is causing the problem here and when using load button
-        // to go to unavailable video. if we can get it to trigger onerror instead of doing nothing
-        // then we are good.
-        // when the loadPlaylist fails because unavailable index it also cancels the rest of the block of code
-            // FINAL NOTE: I commented out the assign playlist with next index method in favour of nextVideo(). the only situation where nextVideo()
-            // doesnt work is when the page is initially loaded. as long as we always load the specific playlist when we want to start playing then 
-            // nextVideo will be sufficient. If we need in future it may be possible to use a variable to trigger nextVideo to get out of 2
-            // unavailable videos in a row.
-
     youtube_player.nextVideo();
-
-    /* SKIPPING METHOD THAT WORKS ON PAGE LOAD - We don't need, just load the playlist with updatePlaylist when we want to start playing.
-    let player_index = youtube_player.getPlaylistIndex();
-    let new_index = player_index + 1;
-    let playlist_string = cleanPlaylist(current_playlist).toString();
-    setTimeout( function() {
-        alert("pre timeout");
-        load_playlist = youtube_player.loadPlaylist({
-            list: playlist_string,
-            index: new_index // what if we are at the end?
-        });
-        alert("post timeout");
-    }, 100);
+    
+    // FINAL "Video Unavailable" ERROR EXPLANATION:
+    /*
+        These errors only occur when using a webpage accessed through ip address. Not sure why but certain videos 
+        will only work if using a domain to access the webpage. Errors for if a video is not embeddable (set by creator)
+        will skip just fine using the nextVideo() function regardless of if they are the first video.
     */
-    //youtube_player.nextVideo();
 
-    // do we need to give feedback to user about what happened?
+    // what happens if we are skipping BACKWARDS through the videos and hit error?
+    // atm we get stopped from going back any further as player will go to NEXT video
 }
 
 function onPlayerStateChange(event) {
-    //alert("player state change event triggered");
 }
 
 // ******************* //YOUTUBE PLAYER - END *******************//
@@ -517,12 +528,9 @@ settings_save_msg.addEventListener('animationend', function() {
 
 
 
-
-
-
 // debugging
 const debug = document.getElementById('debug');
 const debug_interval = setInterval(function() {
-    debug.innerHTML = "works: " + works + " | breaks: " + breaks + " | breaking: " + breaking + " | running: " + running + " | saved_time: " + saved_time + " | total_ms_passed: " + total_ms_passed + " | settings_open: " + settings_open;
+    debug.innerHTML = "current_playlist:" + current_playlist + " | works: " + works + " | breaks: " + breaks + " | breaking: " + breaking + " | running: " + running + " | saved_time: " + saved_time + " | total_ms_passed: " + total_ms_passed + " | settings_open: " + settings_open;
 }
 , 100)
