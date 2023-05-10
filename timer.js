@@ -154,7 +154,29 @@ function setStatus() {
             $('#status').removeClass('elipses');
             break;
     }
-    statusFadeIn();
+    fadeIn(status_div);
+}
+
+function fadeOut(element, callback) {
+    let fadeout_interval = setInterval( () => {
+        let op = Number(element.style.opacity);
+        if (op <= 0) {
+            clearInterval(fadeout_interval);
+            callback();
+        }
+        element.style.opacity = (op - 0.01).toString();
+    }, 5);    
+}
+
+function fadeIn(element, callback) {
+    let fadein_interval = setInterval( () => {
+        let op = Number(element.style.opacity);
+        if (op >= 1) {
+            clearInterval(fadein_interval);
+            callback();
+        }
+        element.style.opacity = (op + 0.01).toString();
+    }, 5);
 }
 
 function statusFadeOut() {
@@ -180,7 +202,7 @@ function statusFadeIn() {
 
 //update status display
 function updateStatus() {
-    statusFadeOut();
+    fadeOut(status_div, setStatus);
 }
 
 
@@ -426,8 +448,9 @@ function onPlayerError(event) {
     // FINAL "Video Unavailable" ERROR EXPLANATION:
     /*
         These errors only occur when using a webpage accessed through ip address. Not sure why but certain videos 
-        will only work if using a domain to access the webpage. Errors for if a video is not embeddable (set by creator)
-        will skip just fine using the nextVideo() function regardless of if they are the first video.
+        will only work if using a domain to access the webpage in the youtube embed api. some speculation online 
+        but no solid answer. Errors for if a video is not embeddable (set by creator) will skip just fine using 
+        the nextVideo() function regardless of if they are the first video.
     */
 
     // what happens if we are skipping BACKWARDS through the videos and hit error?
