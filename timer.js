@@ -157,6 +157,15 @@ function setStatus() {
     fadeIn(status_div);
 }
 
+function displaySwitch(element, bool) {
+    if (bool == true) {
+        element.style.display = "block";
+    }
+    else {
+        element.style.display = "none";
+    }
+}
+
 function fadeOut(element, callback) {
     let fadeout_interval = setInterval( () => {
         let op = Number(element.style.opacity);
@@ -332,11 +341,13 @@ let media_hidden = true;
 media_display_button.addEventListener('click', function() {
     if (media_hidden == true) {
         media_hidden = false;
-        media_display.style.display = "block";
+        displaySwitch(media_display, true)
+        fadeIn(media_display);
     }
     else {
         media_hidden = true;
-        media_display.style.display = "none";
+        media_display.style.opacity = 1;
+        fadeOut(media_display, displaySwitch(media_display, false));
     }
 })
 
