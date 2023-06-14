@@ -1,3 +1,4 @@
+
 window.onload = function() {
 }
 
@@ -167,9 +168,20 @@ function displaySwitch(element, bool) {
 }
 
 function fadeOut(element, callback) {
+
+    if (
+        element.dataset.fading_in == true || 
+        element.dataset.fading_out == true
+        ) {
+        return;
+    }
+
+    element.dataset.fading_out = true;
+
     let fadeout_interval = setInterval( () => {
         let op = Number(element.style.opacity);
         if (op <= 0) {
+            element.dataset.fading_out = false;
             clearInterval(fadeout_interval);
             callback();
         }
@@ -178,9 +190,20 @@ function fadeOut(element, callback) {
 }
 
 function fadeIn(element, callback) {
+
+    if (
+        element.dataset.fading_in == true || 
+        element.dataset.fading_out == true
+        ) {
+        return;
+    }
+
+    element.dataset.fading_in = true;
+
     let fadein_interval = setInterval( () => {
         let op = Number(element.style.opacity);
         if (op >= 1) {
+            element.dataset.fading_in = false;
             clearInterval(fadein_interval);
             callback();
         }
@@ -336,6 +359,8 @@ function timerTick() {
 // get elements
 const media_display_button = document.getElementById('media-display-button');
 const media_display = document.getElementById('media-display');
+media_display.dataset.fading_in = false;
+media_display.dataset.fading_out = false;
 
 let media_hidden = true;
 media_display_button.addEventListener('click', function() {
@@ -565,6 +590,6 @@ settings_save_msg.addEventListener('animationend', function() {
 // debugging
 const debug = document.getElementById('debug');
 const debug_interval = setInterval(function() {
-    debug.innerHTML = "current_playlist:" + current_playlist + " | works: " + works + " | breaks: " + breaks + " | breaking: " + breaking + " | running: " + running + " | saved_time: " + saved_time + " | total_ms_passed: " + total_ms_passed + " | settings_open: " + settings_open;
+    debug.innerHTML = "current_playlist:" + current_playlist + " | works: " + works + " | breaks: " + breaks + " | breaking: " + breaking + " | running: " + running + " | saved_time: " + saved_time + " | total_ms_passed: " + total_ms_passed + " | settings_open: " + settings_open + " | media_display-fading_in: " + media_display.dataset.fading_in;
 }
 , 100)
