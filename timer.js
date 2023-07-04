@@ -186,7 +186,7 @@ function fadeOut(element, callback) {
             callback();
             return;
         }
-        element.style.opacity = (op - 0.001).toString();
+        element.style.opacity = (op - 0.01).toString();
     }, 5);
 }
 
@@ -204,7 +204,7 @@ function fadeIn(element, callback) {
             callback();
             return;
         }
-        element.style.opacity = (op + 0.001).toString();
+        element.style.opacity = (op + 0.01).toString();
     }, 5);
 
 }
@@ -367,7 +367,7 @@ media_display_button.addEventListener('click', function() {
         fadeIn(media_display);
     }
     else {
-        media_display.style.opacity = 1;
+        //media_display.style.opacity = 1;
         fadeOut(media_display, function() { displaySwitch(media_display, false); });
     }
 })
