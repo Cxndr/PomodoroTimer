@@ -161,54 +161,52 @@ function setStatus() {
 function displaySwitch(element, bool) {
     if (bool == true) {
         element.style.display = "block";
+        media_hidden = false;
     }
     else {
         element.style.display = "none";
+        media_hidden = true;
     }
 }
 
 function fadeOut(element, callback) {
 
-    if (
-        element.dataset.fading_in == true || 
-        element.dataset.fading_out == true
-        ) {
-        return;
-    }
+    // can we just use fade toggle?
+    // https://stackoverflow.com/questions/16278147/javascript-fade-div-in-on-button-click-then-on-2nd-button-click-fade-out
+    
+    //if (element.dataset.fading_in == "true") { return; }
 
     element.dataset.fading_out = true;
 
     let fadeout_interval = setInterval( () => {
         let op = Number(element.style.opacity);
-        if (op <= 0) {
+        if (op <= 0 || element.dataset.fading_in == "true") {
             element.dataset.fading_out = false;
             clearInterval(fadeout_interval);
             callback();
+            return;
         }
-        element.style.opacity = (op - 0.01).toString();
-    }, 5);    
+        element.style.opacity = (op - 0.001).toString();
+    }, 5);
 }
 
 function fadeIn(element, callback) {
 
-    if (
-        element.dataset.fading_in == true || 
-        element.dataset.fading_out == true
-        ) {
-        return;
-    }
+    //if (element.dataset.fading_out == "true") { return; }
 
     element.dataset.fading_in = true;
 
     let fadein_interval = setInterval( () => {
         let op = Number(element.style.opacity);
-        if (op >= 1) {
+        if (op >= 1 || element.dataset.fading_out == "true") {
             element.dataset.fading_in = false;
             clearInterval(fadein_interval);
             callback();
+            return;
         }
-        element.style.opacity = (op + 0.01).toString();
+        element.style.opacity = (op + 0.001).toString();
     }, 5);
+
 }
 
 function statusFadeOut() {
@@ -365,14 +363,12 @@ media_display.dataset.fading_out = false;
 let media_hidden = true;
 media_display_button.addEventListener('click', function() {
     if (media_hidden == true) {
-        media_hidden = false;
         displaySwitch(media_display, true)
         fadeIn(media_display);
     }
     else {
-        media_hidden = true;
         media_display.style.opacity = 1;
-        fadeOut(media_display, displaySwitch(media_display, false));
+        fadeOut(media_display, function() { displaySwitch(media_display, false); });
     }
 })
 
@@ -586,10 +582,9 @@ settings_save_msg.addEventListener('animationend', function() {
 
 
 
-
 // debugging
 const debug = document.getElementById('debug');
 const debug_interval = setInterval(function() {
-    debug.innerHTML = "current_playlist:" + current_playlist + " | works: " + works + " | breaks: " + breaks + " | breaking: " + breaking + " | running: " + running + " | saved_time: " + saved_time + " | total_ms_passed: " + total_ms_passed + " | settings_open: " + settings_open + " | media_display-fading_in: " + media_display.dataset.fading_in;
+    debug.innerHTML = "current_playlist:" + current_playlist + " | works: " + works + " | breaks: " + breaks + " | breaking: " + breaking + " | running: " + running + " | saved_time: " + saved_time + " | total_ms_passed: " + total_ms_passed + " | settings_open: " + settings_open + " | media_display-fading_in: " + media_display.dataset.fading_in  + " | media_display-fading_out: " + media_display.dataset.fading_out  + " | media_display-opacity: " + media_display.style.opacity + " | media_hidden: " + media_hidden;
 }
 , 100)
