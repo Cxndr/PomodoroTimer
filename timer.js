@@ -100,10 +100,16 @@ function printOutput() {
 }
 
 // ms time to x hours x mins x seconds
-function msToTimeString(ms) {
+function msToHms(ms) {
     let seconds_value = Math.floor( (ms/1000) % 60 );
     let minutes_value = Math.floor( (ms / (1000 * 60)) % 60 );
     let hours_value = Math.floor( (ms / (1000 * 60 * 60)) % 60 );
+    return [hours_value, minutes_value, seconds_value];
+}
+function msToTimeString(ms) {
+    let hours_value = msToHms(ms)[0];
+    let minutes_value = msToHms(ms)[1];
+    let seconds_value = msToHms(ms)[2];
     return String(hours_value) + "h " + String(minutes_value) + "m " + String(seconds_value) + "s";
 }
 function hmsToMs(hours, mins, secs) {
@@ -537,26 +543,52 @@ settings_open_button.addEventListener('click', function() {
 })
 
 // settings form
-settings_save_msg = document.getElementById('settings-save-msg');
+$settings_save_msg = document.getElementById('settings-save-msg');
+
+let $worktime_hours = document.getElementById('settings-worktime-hours').value;
+let $worktime_mins = document.getElementById('settings-worktime-mins').value;
+let $worktime_secs = document.getElementById('settings-worktime-secs').value;
+
+let $breaktime_hours = document.getElementById('settings-breaktime-hours').value;
+let $breaktime_mins = document.getElementById('settings-breaktime-mins').value;
+let $breaktime_secs = document.getElementById('settings-breaktime-secs').value;
+
+let $work_playlist = document.getElementById('settings-work-playlist').value;
+let $break_playlist = document.getElementById('settings-break-playlist').value;
+
+let $sfx_volume = document.getElementById('settings-volume-sfx').value;
+let $music_volume = document.getElementById('settings-volume-music').value;
+
+function settingsSetInputs() {
+
+    $break_playlist = document.getElementById('settings-break-playlist').value;
+
+    $worktime_hours = msToHms(work_time)[0];
+    $worktime_mins = msToHms(work_time)[1];
+    $worktime_secs = msToHms(work_time)[2];
+
+    $breaktime_hours = msToHms(break_time)[0];
+    $breaktime_mins = msToHms(break_time)[1];
+    $breaktime_secs = msToHms(break_time)[2];
+
+    $work_playlist = work_playlist;
+    $break_playlist = break_playlist;
+
+    $sfx_volume = sfx_volume;
+    $music_volume = music_volume;
+
+}
 
 function settingsRetrieveInputs() {
 
-    let worktime_hours = document.getElementById('settings-worktime-hours').value;
-    let worktime_mins = document.getElementById('settings-worktime-mins').value;
-    let worktime_secs = document.getElementById('settings-worktime-secs').value;
+    work_time = hmsToMs($worktime_hours, $worktime_mins, $worktime_secs);
+    break_time = hmsToMs($breaktime_hours, $breaktime_mins, $breaktime_secs);
 
-    let breaktime_hours = document.getElementById('settings-breaktime-hours').value;
-    let breaktime_mins = document.getElementById('settings-breaktime-mins').value;
-    let breaktime_secs = document.getElementById('settings-breaktime-secs').value;
-    
-    work_time = hmsToMs(worktime_hours, worktime_mins, worktime_secs);
-    break_time = hmsToMs(breaktime_hours, breaktime_mins, breaktime_secs);
+    work_playlist = $work_playlist;
+    break_playlist = $break_playlist;
 
-    work_playlist = document.getElementById('settings-work-playlist').value;
-    break_playlist = document.getElementById('settings-break-playlist').value;
-
-    sfx_volume = document.getElementById('settings-volume-sfx').value;
-    music_volume = document.getElementById('settings-volume-music').value;
+    sfx_volume = $sfx_volume;
+    music_volume = $music_volume;
 
 }
 
@@ -567,15 +599,31 @@ settings_form.addEventListener('submit', function(event) {
 
     settingsRetrieveInputs();
 
-    settings_save_msg.style.display = "block";
-    settings_save_msg.style.animation = "5s linear 0.3s fade-in-hold";
+    $settings_save_msg.style.textContent = "Settings Saved!";
+    $settings_save_msg.style.display = "block";
+    $settings_save_msg.style.animation = "5s linear 0.3s fade-in-hold";
 
     updatePlaylist();
 
 });
 
-settings_save_msg.addEventListener('animationend', function() {
-    settings_save_msg.style.display = "none";
+// default settings
+const $settings_default_button = document.getElementById('settings_default_button');
+
+$settings_default_button.addEventListener('click', function(event){
+    
+    event.preventDefault();
+
+    $settings_save_msg.style.textContent = "Set to default!";
+    $settings_save_msg.style.display = "block";
+    $settings_save_msg.style.animation = "5s linear 0.3s fade-in-hold";
+
+    settingsSetDefault();
+
+});
+
+$settings_save_msg.addEventListener('animationend', function() {
+    $settings_save_msg.style.display = "none";
 });
 
 // ******************* //SETTINGS - END *******************//
