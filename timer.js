@@ -1,11 +1,11 @@
 
 window.onload = function() {
-}
+};
 
 // mechanical functions
 function padTo2Digits(num) {
     return num.toString().padStart(2,"0");
-}
+};
 
 
 // ******************* //TIMER *******************//
@@ -30,17 +30,23 @@ $('.timer-button').mouseup(function() {
 
 // settings variables
 let work_time = 10 * 1000; // * 1000 for seconds to ms
+let work_time_default = work_time;
 let break_time = 10 * 1000;
+let break_time_default = break_time;
 let work_playlist = "";
 work_playlist = "https://www.youtube.com/playlist?list=PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i";
+let work_playlist_default = work_playlist;
 let work_playlist_lastplayed_timestamp = 0;
 let work_playlist_lastplayed_index = 0;
 let break_playlist = "";
 break_playlist = "https://www.youtube.com/playlist?list=PLrQHJyrdiNuaU4E9erO20CFwhzSii7eam";
+let break_playlist_default = break_playlist;
 let break_playlist_lastplayed_timestamp = 0;
 let break_playlist_lastplayed_index = 0;
 let sfx_volume = 5;
+let sfx_volume_default = sfx_volume;
 let music_volume = 40;
+let music_volume_default = music_volume;
 
 // mechanical variables
 let timer_interval;
@@ -436,16 +442,6 @@ function onPlaylistLoaded() {
 
 }
 
-// https://jsfiddle.net/u461nrt8/9/
-function testButton() {
-    // MAKE SURE TEST PLAYLISTS ARE PUBLIC!
-    let cleaned_playlist = cleanPlaylist("https://www.youtube.com/playlist?list=PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i");
-    pl_load = youtube_player.loadPlaylist({
-        list: cleaned_playlist, //cleanPlaylist(current_playlist).toString(),
-        index: 0 // onerror is not being triggered when we have an index for a video thats not playable, the player just doesnt load!
-    }, null, onPlaylistLoaded);
-}
-
 // load iframe player api asynchronously
 player_element = document.createElement('script');
 player_element.src = "https://www.youtube.com/iframe_api";
@@ -538,58 +534,71 @@ settings_open_button.addEventListener('click', function() {
     }
     else {
         settings_open = true;
+        settingsSetInputs();
         openSettings();
+        
     }
 })
 
 // settings form
 $settings_save_msg = document.getElementById('settings-save-msg');
 
-let $worktime_hours = document.getElementById('settings-worktime-hours').value;
-let $worktime_mins = document.getElementById('settings-worktime-mins').value;
-let $worktime_secs = document.getElementById('settings-worktime-secs').value;
+let $worktime_hours = document.getElementById('settings-worktime-hours');
+let $worktime_mins = document.getElementById('settings-worktime-mins');
+let $worktime_secs = document.getElementById('settings-worktime-secs');
 
-let $breaktime_hours = document.getElementById('settings-breaktime-hours').value;
-let $breaktime_mins = document.getElementById('settings-breaktime-mins').value;
-let $breaktime_secs = document.getElementById('settings-breaktime-secs').value;
+let $breaktime_hours = document.getElementById('settings-breaktime-hours');
+let $breaktime_mins = document.getElementById('settings-breaktime-mins');
+let $breaktime_secs = document.getElementById('settings-breaktime-secs');
 
-let $work_playlist = document.getElementById('settings-work-playlist').value;
-let $break_playlist = document.getElementById('settings-break-playlist').value;
+let $work_playlist = document.getElementById('settings-work-playlist');
+let $break_playlist = document.getElementById('settings-break-playlist');
 
-let $sfx_volume = document.getElementById('settings-volume-sfx').value;
-let $music_volume = document.getElementById('settings-volume-music').value;
+let $sfx_volume = document.getElementById('settings-volume-sfx');
+let $music_volume = document.getElementById('settings-volume-music');
 
 function settingsSetInputs() {
 
-    $break_playlist = document.getElementById('settings-break-playlist').value;
+    $break_playlist.value = document.getElementById('settings-break-playlist').value;
 
-    $worktime_hours = msToHms(work_time)[0];
-    $worktime_mins = msToHms(work_time)[1];
-    $worktime_secs = msToHms(work_time)[2];
+    $worktime_hours.value = msToHms(work_time)[0];
+    $worktime_mins.value = msToHms(work_time)[1];
+    $worktime_secs.value = msToHms(work_time)[2];
 
-    $breaktime_hours = msToHms(break_time)[0];
-    $breaktime_mins = msToHms(break_time)[1];
-    $breaktime_secs = msToHms(break_time)[2];
+    $breaktime_hours.value = msToHms(break_time)[0];
+    $breaktime_mins.value = msToHms(break_time)[1];
+    $breaktime_secs.value = msToHms(break_time)[2];
 
-    $work_playlist = work_playlist;
-    $break_playlist = break_playlist;
+    $work_playlist.value = work_playlist;
+    $break_playlist.value = break_playlist;
 
-    $sfx_volume = sfx_volume;
-    $music_volume = music_volume;
+    $sfx_volume.value = sfx_volume;
+    $music_volume.value = music_volume;
 
 }
 
 function settingsRetrieveInputs() {
 
-    work_time = hmsToMs($worktime_hours, $worktime_mins, $worktime_secs);
-    break_time = hmsToMs($breaktime_hours, $breaktime_mins, $breaktime_secs);
+    work_time = hmsToMs($worktime_hours.value, $worktime_mins.value, $worktime_secs.value);
+    break_time = hmsToMs($breaktime_hours.value, $breaktime_mins.value, $breaktime_secs.value);
 
-    work_playlist = $work_playlist;
-    break_playlist = $break_playlist;
+    work_playlist = $work_playlist.value;
+    break_playlist = $break_playlist.value;
 
-    sfx_volume = $sfx_volume;
-    music_volume = $music_volume;
+    sfx_volume = $sfx_volume.value;
+    music_volume = $music_volume.value;
 
+}
+
+function settingsSetDefault() {
+    work_time = work_time_default;
+    break_time = break_time_default;
+    work_playlist = work_playlist_default;
+    break_playlist = break_playlist_default;
+    sfx_volume = sfx_volume_default;
+    music_volume = music_volume_default;
+
+    settingsSetInputs();
 }
 
 // on submit
@@ -608,7 +617,7 @@ settings_form.addEventListener('submit', function(event) {
 });
 
 // default settings
-const $settings_default_button = document.getElementById('settings_default_button');
+const $settings_default_button = document.getElementById('settings-default-button');
 
 $settings_default_button.addEventListener('click', function(event){
     
@@ -630,9 +639,9 @@ $settings_save_msg.addEventListener('animationend', function() {
 
 
 
+
 // debugging
 const debug = document.getElementById('debug');
 const debug_interval = setInterval(function() {
     debug.innerHTML = "current_playlist:" + current_playlist + " | works: " + works + " | breaks: " + breaks + " | breaking: " + breaking + " | running: " + running + " | saved_time: " + saved_time + " | total_ms_passed: " + total_ms_passed + " | settings_open: " + settings_open + " | media_display-fading_in: " + media_display.dataset.fading_in  + " | media_display-fading_out: " + media_display.dataset.fading_out  + " | media_display-opacity: " + media_display.style.opacity + " | media_hidden: " + media_hidden;
-}
-, 100)
+}, 100);
