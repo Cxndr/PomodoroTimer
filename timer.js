@@ -68,6 +68,20 @@ let timer_status = 0; // 0=none, 1=working, 2=breaking, 3=paused
 let settings_open = false;
 let current_playlist = "https://www.youtube.com/playlist?list=PLrQHJyrdiNuYLF-LJ87QnmVw3tNtTbe0i";
 
+// audio - settings
+let settings_volume_sfx = document.getElementById('settings-volume-sfx');
+settings_volume_sfx.addEventListener("input", function(e) {
+    sfx_volume = e.currentTarget.value;
+    audio_alert.volume = sfx_volume;
+});
+
+let settings_volume_music = document.getElementById('settings-volume-music');
+settings_volume_music.addEventListener("input", function(e) {
+    music_volume = e.currentTarget.value;
+    youtube_player.setVolume(music_volume);
+});
+
+
 // audio - alerts
 function audioAlert(type) {
     let random_alert = Math.floor(Math.random() * 3) + 1;
@@ -641,7 +655,37 @@ $settings_save_msg.addEventListener('animationend', function() {
 
 
 // debugging
+
 const debug = document.getElementById('debug');
+const seperator_string = " | "
+const label_string = ": "
+const debug_list = [
+    {current_playlist},
+    {works},
+    {breaks},
+    {breaking},
+    {running},
+    {saved_time},
+    {total_ms_passed},
+    {settings_open},
+    {"media_display.dataset.fading_in": media_display.dataset.fading_in},
+    {"media_display.dataset.fading_out": media_display.dataset.fading_out},
+    {"media_display.style.opacity": media_display.style.opacity},
+    {media_hidden}
+
+];
+
+let debug_output = ""
+
+function debugAddItemString(list_item, index, arr) {
+    let key = Object.keys(list_item)[0];
+    debug_output += key + ": " + list_item[key];
+    if (index != (arr.length-1)) {
+        debug_output += " | ";
+    }
+}
+debug_list.forEach(debugAddItemString);
+
 const debug_interval = setInterval(function() {
-    debug.innerHTML = "current_playlist:" + current_playlist + " | works: " + works + " | breaks: " + breaks + " | breaking: " + breaking + " | running: " + running + " | saved_time: " + saved_time + " | total_ms_passed: " + total_ms_passed + " | settings_open: " + settings_open + " | media_display-fading_in: " + media_display.dataset.fading_in  + " | media_display-fading_out: " + media_display.dataset.fading_out  + " | media_display-opacity: " + media_display.style.opacity + " | media_hidden: " + media_hidden;
+    debug.innerHTML = debug_output;
 }, 100);

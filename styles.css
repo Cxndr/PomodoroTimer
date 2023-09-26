@@ -186,7 +186,7 @@ main {
 #settings {
     width: 0rem;
 }
-#settings-save-button {
+.settings-bottom-button{
     padding: 0.35rem 1rem;;
     margin: 3.5rem auto 2rem auto;
 }
@@ -237,7 +237,6 @@ main {
     display: none;
 }
 #youtube-player {
-    background-color: red;
     float: left;
     position: relative;
     top: 1rem;
