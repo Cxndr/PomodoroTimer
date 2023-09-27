@@ -191,15 +191,15 @@ main {
     margin: 3.5rem auto 2rem auto;
 }
 #settings-save-msg {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: var(--offerwhite);
     opacity: 0;
     display: none;
     float: left;
     width: 100%;
-    height: 0;
+    height: 0rem;
     position: relative;
-    top: 1.2rem;
+    bottom: 7rem;
 }
 #top-left-buttons {
     position: fixed;

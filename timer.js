@@ -522,6 +522,23 @@ function onPlayerStateChange(event) {
 const settings_open_button = document.getElementById('settings-button');
 const settings_form = document.getElementById('settings-form');
 
+// temporary keyboard shortcuts for debugging
+/*
+window.addEventListener('keydown', function(event) {
+    if (event.code == "KeyS" && event.getModifierState("Shift")) {
+        if (settings_open == true) {
+            settings_open = false;
+            closeSettings();
+        }
+        else {
+            settings_open = true;
+            settingsSetInputs();
+            openSettings();
+        }
+    }
+})
+*/
+
 // settings sidebar
 function openSettings() {
     document.getElementById("settings").style.width = "35rem";
@@ -550,12 +567,11 @@ settings_open_button.addEventListener('click', function() {
         settings_open = true;
         settingsSetInputs();
         openSettings();
-        
     }
 })
 
 // settings form
-$settings_save_msg = document.getElementById('settings-save-msg');
+let $settings_save_msg = document.getElementById('settings-save-msg');
 
 let $worktime_hours = document.getElementById('settings-worktime-hours');
 let $worktime_mins = document.getElementById('settings-worktime-mins');
@@ -570,6 +586,10 @@ let $break_playlist = document.getElementById('settings-break-playlist');
 
 let $sfx_volume = document.getElementById('settings-volume-sfx');
 let $music_volume = document.getElementById('settings-volume-music');
+
+// hide button focus styling on mouse up 
+// - (stops clicking button from creating focus styling but keeps accessibility)
+$('.settings-bottom-button').mouseup(function() { this.blur(); });
 
 function settingsSetInputs() {
 
@@ -622,24 +642,31 @@ settings_form.addEventListener('submit', function(event) {
 
     settingsRetrieveInputs();
 
-    $settings_save_msg.style.textContent = "Settings Saved!";
+    $settings_save_msg.textContent = "Settings Saved!";
     $settings_save_msg.style.display = "block";
-    $settings_save_msg.style.animation = "5s linear 0.3s fade-in-hold";
+    $settings_save_msg.style.animation = "";
+    void $settings_save_msg.offsetWidth; // dom reflow to allow animation restart
+    $settings_save_msg.style.animation = "3s linear 0.3s fade-in-hold";
 
     updatePlaylist();
 
 });
 
 // default settings
+/*
 const $settings_default_button = document.getElementById('settings-default-button');
 
 $settings_default_button.addEventListener('click', function(event){
-    
+*/
+settings_form.addEventListener('reset', function(event) {  
+
     event.preventDefault();
 
-    $settings_save_msg.style.textContent = "Set to default!";
+    $settings_save_msg.textContent = "Settings Reset to Defaults!";
     $settings_save_msg.style.display = "block";
-    $settings_save_msg.style.animation = "5s linear 0.3s fade-in-hold";
+    $settings_save_msg.style.animation = "";
+    void $settings_save_msg.offsetWidth; // dom reflow to allow animation restart
+    $settings_save_msg.style.animation = "3s linear 0.3s fade-in-hold";
 
     settingsSetDefault();
 
