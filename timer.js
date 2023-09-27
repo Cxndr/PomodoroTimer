@@ -45,8 +45,10 @@ let break_playlist_lastplayed_timestamp = 0;
 let break_playlist_lastplayed_index = 0;
 let sfx_volume = 5;
 let sfx_volume_default = sfx_volume;
+let sfx_muted = false;
 let music_volume = 40;
 let music_volume_default = music_volume;
+let music_muted = false;
 
 // mechanical variables
 let timer_interval;
@@ -84,6 +86,9 @@ settings_volume_music.addEventListener("input", function(e) {
 
 // audio - alerts
 function audioAlert(type) {
+    if (sfx_muted == true) {
+        return;
+    }  
     let random_alert = Math.floor(Math.random() * 3) + 1;
     let random_alert_string = String(random_alert);
     let audio_alert;
@@ -571,25 +576,30 @@ settings_open_button.addEventListener('click', function() {
 })
 
 // settings form
-let $settings_save_msg = document.getElementById('settings-save-msg');
+const $settings_save_msg = document.getElementById('settings-save-msg');
 
-let $worktime_hours = document.getElementById('settings-worktime-hours');
-let $worktime_mins = document.getElementById('settings-worktime-mins');
-let $worktime_secs = document.getElementById('settings-worktime-secs');
+const $worktime_hours = document.getElementById('settings-worktime-hours');
+const $worktime_mins = document.getElementById('settings-worktime-mins');
+const $worktime_secs = document.getElementById('settings-worktime-secs');
 
-let $breaktime_hours = document.getElementById('settings-breaktime-hours');
-let $breaktime_mins = document.getElementById('settings-breaktime-mins');
-let $breaktime_secs = document.getElementById('settings-breaktime-secs');
+const $breaktime_hours = document.getElementById('settings-breaktime-hours');
+const $breaktime_mins = document.getElementById('settings-breaktime-mins');
+const $breaktime_secs = document.getElementById('settings-breaktime-secs');
 
-let $work_playlist = document.getElementById('settings-work-playlist');
-let $break_playlist = document.getElementById('settings-break-playlist');
+const $work_playlist = document.getElementById('settings-work-playlist');
+const $break_playlist = document.getElementById('settings-break-playlist');
 
-let $sfx_volume = document.getElementById('settings-volume-sfx');
-let $music_volume = document.getElementById('settings-volume-music');
+const $sfx_volume = document.getElementById('settings-volume-sfx');
+const $music_volume = document.getElementById('settings-volume-music');
+const $sfx_mute_button = document.getElementById('settings-mute-button-sfx');
+const $music_mute_button = document.getElementById('settings-mute-button-music');
+
+const $settings_save_button = document.getElementById('settings-save-button');
+const $settings_default_button = document.getElementById('settings-default-button');
 
 // hide button focus styling on mouse up 
 // - (stops clicking button from creating focus styling but keeps accessibility)
-$('.settings-bottom-button').mouseup(function() { this.blur(); });
+$('.settings-button').mouseup(function() { this.blur(); });
 
 function settingsSetInputs() {
 
@@ -629,13 +639,52 @@ function settingsSetDefault() {
     break_time = break_time_default;
     work_playlist = work_playlist_default;
     break_playlist = break_playlist_default;
-    sfx_volume = sfx_volume_default;
-    music_volume = music_volume_default;
 
     settingsSetInputs();
 }
 
-// on submit
+// mute buttons
+const mute_icon = '<i class="fa-solid fa-volume-xmark"></i>';
+const unmute_icon = '<i class="fa-solid fa-volume-high"></i>';
+
+$sfx_mute_button.addEventListener('click', function(event) {
+    if (sfx_muted == false) {
+        sfx_muted = true;                                     
+        $sfx_mute_button.innerHTML = mute_icon;
+        $sfx_volume.disabled = true;
+        $sfx_volume.value = 0;
+    }
+    else {
+        sfx_muted = false;
+        $sfx_mute_button.innerHTML = unmute_icon;
+        $sfx_volume.disabled = false;
+        $sfx_volume.value = sfx_volume;
+    }
+});
+
+$music_mute_button.addEventListener('click', function(event) {
+    if (music_muted == false) {
+        music_muted = true;
+        youtube_player.mute();                                
+        $music_mute_button.innerHTML = mute_icon;
+        $music_volume.disabled = true;
+        $music_volume.value = 0;
+    }
+    else {
+        music_muted = false;
+        youtube_player.unMute();  
+        $music_mute_button.innerHTML = unmute_icon;
+        $music_volume.disabled = false;
+        $music_volume.value = music_volume;
+    }
+});
+
+// on input change
+settings_form.addEventListener('input', function(event) {
+    $settings_save_button.disabled = false;
+});
+
+// on save button
 settings_form.addEventListener('submit', function(event) {
     
     event.preventDefault();
@@ -650,14 +699,11 @@ settings_form.addEventListener('submit', function(event) {
 
     updatePlaylist();
 
+    $settings_save_button.disabled = true;
+
 });
 
-// default settings
-/*
-const $settings_default_button = document.getElementById('settings-default-button');
-
-$settings_default_button.addEventListener('click', function(event){
-*/
+// on reset button
 settings_form.addEventListener('reset', function(event) {  
 
     event.preventDefault();
@@ -672,6 +718,7 @@ settings_form.addEventListener('reset', function(event) {
 
 });
 
+// reset save msg to display:none to hide for screen readers
 $settings_save_msg.addEventListener('animationend', function() {
     $settings_save_msg.style.display = "none";
 });

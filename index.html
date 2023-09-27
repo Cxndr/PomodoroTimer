@@ -89,19 +89,19 @@
                     <label for="break-playlist">Break Playlist: </label>
                     <input id="settings-break-playlist" name="break-playlist" class="form-control playlist-control required" type="url" placeholder="enter youtube playlist link">
 
-                    <button id="settings-save-button" class="settings-bottom-button" type="submit">Save</button>
-                    <button id="settings-default-button" class="settings-bottom-button" type="reset">Default</button>
-                    <div id="settings-save-msg">x</div>
-
+                    <button id="settings-save-button"class="settings-button" type="submit" disabled>Save</button>
+                    <button id="settings-default-button" class="settings-button" type="reset">Default</button>
+                    <div id="settings-save-msg"></div>
+                </form>
                     <label for="sfx-volume">SFX Volume: </label>
-                    <input id="settings-volume-sfx" name="sfx-volume" class="form-control volume-control required" type="range" min="0" max = "100" value="80">
+                    <input id="settings-volume-sfx" name="sfx-volume" class="volume-control required" type="range" min="0" max = "100" value="80">
+                    <button id="settings-mute-button-sfx" class="settings-mute-button" type="button"><i class="fa-solid fa-volume-high"></i></button>
 
                     <label for="music-volume">Music Volume: </label>
-                    <input id="settings-volume-music" name="music-volume" class="form-control volume-control required" type="range" min="0" max = "100" value="70">
-                    
+                    <input id="settings-volume-music" name="music-volume" class="volume-control required" type="range" min="0" max = "100" value="70">
+                    <button id="settings-mute-button-music" class="settings-mute-button" type="button"><i class="fa-solid fa-volume-high"></i></button>
 
-
-                </form>
+                
             </div>
         </div>
 

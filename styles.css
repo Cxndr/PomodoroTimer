@@ -34,6 +34,14 @@ main {
     position: relative;
 }
 
+button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+button:enabled {
+    cursor: pointer;
+}
+
 .top-left {
     position: absolute;
     top: 0rem;
@@ -80,6 +88,7 @@ main {
     overflow:auto;
     scrollbar-width: thin;
     scrollbar-color: var(--offwhite) #00000000;
+    text-align:center;
 }
 #sidebar-content header {
     text-align: center;
@@ -92,7 +101,6 @@ main {
 }
 #sidebar-content form {
     padding-top: 1.5rem;
-    text-align: center;
 }
 #sidebar-content input {
     box-sizing: border-box;
@@ -117,7 +125,8 @@ main {
     width: 100%;
 }
 #sidebar-content .volume-control {
-    width: 100%;
+    width: 90%;
+    display: inline;
 }
 #sidebar-content fieldset {
     border: none;
@@ -160,36 +169,49 @@ main {
     box-shadow: rgba(0,0,0,0.02) 0 1px 3px 0;
     color: var(--charcoal);
     background-color: var(--offwhite);
-    cursor: pointer;
     transition: all 250ms;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
+    padding: 0.35rem 1rem;;
+    margin: 3.5rem auto 2rem auto;
 }
-#sidebar-content button:hover {
+#sidebar-content button.settings-button {
+    width: 8.5rem;
+}
+#sidebar-content button.settings-button:hover:enabled {
     /*border-color: rgba(0,0,0,0.15);*/
     box-shadow: rgba(0,0,0,0.9) 0 0.5rem 1rem;
     color: rgba(0, 0, 0, 0.85);
     outline: 0 !important;
     transform: translateY(-1px);
 }
-#sidebar-content button:focus {
+#sidebar-content button.settings-button:focus:enabled {
     border-color: rgba(0,0,0,0.15);
     outline:auto;
 }
-#sidebar-content button:active {
+#sidebar-content button.settings-button:active:enabled {
     background-color: #ffffff;
     border-color: rgba(0,0,0,0.15);
     box-shadow: rgba(0,0,0,0.06) 0 2px 4px;
     transform: translateY(0);
 }
+
+#sidebar-content button.settings-mute-button {
+    background-color: transparent;
+    color: var(--offwhite);
+    margin: 0;
+    position: relative;
+    margin: 0rem;
+    padding: 0rem;
+    padding-left: 0.5rem;
+}
+
 #settings {
     width: 0rem;
 }
-.settings-bottom-button{
-    padding: 0.35rem 1rem;;
-    margin: 3.5rem auto 2rem auto;
-}
+
+
 #settings-save-msg {
     font-size: 1.1rem;
     color: var(--offerwhite);
@@ -209,7 +231,6 @@ main {
     font-family: Lato, Arial;
     background: none;
     border: none;
-    cursor: pointer;
     color: #f0f0f1b6;
     vertical-align: middle;
     line-height: 100%;
@@ -317,7 +338,6 @@ main {
     border-radius: 1rem;
     box-shadow: rgba(0,0,0,0.02) 0 1px 3px 0;
     color: rgba(0,0,0,0.85);
-    cursor: pointer;
     transition: all 250ms;
     user-select: none;
     -webkit-user-select: none;
@@ -370,7 +390,6 @@ main {
 }
 #timer-stats-button:hover {
     background-color: rgb(30,30,30);
-    cursor: pointer;
     position: relative;
     top: -1px;
     color: rgb(235,235,235);
@@ -437,8 +456,10 @@ main {
 }
 
 @keyframes fade-in-hold {
-    0% { opacity: 0; }
-    4% { opacity: 1; }
-    60% { opacity: 1; }
-    100% { opacity: 0; }
+    0% { opacity: 0; bottom: 6rem; }
+    4% { opacity: 1; bottom: 7rem; }
+    6% { opacity: 1; bottom: 7.2rem; }
+    10% { opacity: 1; bottom: 7rem; }
+    60% { opacity: 1; bottom: 7rem; }
+    100% { opacity: 0; bottom: 7rem; }
 }
