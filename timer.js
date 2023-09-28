@@ -14,7 +14,8 @@ function padTo2Digits(num) {
 const timer_text = document.getElementById('timer-text');
 const start_button = document.getElementById('start-button');
 const reset_button = document.getElementById('reset-button');
-const timer_buttons = document.getElementsByClassName('timer-button');
+const skip_button = document.getElementById('skip-button');
+const timer_buttons = document.getElementById('timer-buttons');
 const timer_stats_button = document.getElementById('timer-stats-button');
 const stats_work_sessions = document.getElementById('work-sessions');
 const stats_work_time = document.getElementById('work-time');
@@ -55,8 +56,12 @@ let timer_interval;
 let start_time = Date.now();
 let current_time = Date.now();
 let saved_time = 0;
-let total_ms_passed = 0;
-let total_seconds_passed;
+let time_passed_ms = 0;
+let time_passed_secs;
+let total_work_time = 0;
+let total_break_time = 0;
+let work_time_stored = 0;
+let break_time_stored = 0;
 let seconds;
 let minutes;
 let output;
@@ -108,21 +113,20 @@ function audioAlert(type) {
     audio_alert.play();
 }
 
-// need to run after updating "works" or "breaks"
+// keep track of total time passed
 function updateTimeVariables() {
-    work_time_current = work_time * works;
-    break_time_current = break_time * breaks;
-    work_time_rollover = work_time * (works + 1);
-    break_time_rollover = break_time * (breaks + 1);
+    total_work_time = work_time_stored + (time_passed_ms * Number(!breaking));
+    total_break_time = break_time_stored + (time_passed_ms * Number(breaking));
 }
 
 function printOutput() {
-    total_seconds_passed = Math.floor(total_ms_passed / 1000);
-    minutes = Math.floor(total_seconds_passed / 60);
-    seconds = Math.floor(total_seconds_passed % 60);
+    time_passed_secs = Math.floor(time_passed_ms / 1000);
+    minutes = Math.floor(time_passed_secs / 60);
+    seconds = Math.floor(time_passed_secs % 60);
     output = minutes + ":" + padTo2Digits(seconds);
     timer_text.innerHTML = output;
 }
+
 
 // ms time to x hours x mins x seconds
 function msToHms(ms) {
@@ -148,9 +152,9 @@ function hmsToMs(hours, mins, secs) {
 // update stats display
 function updateStats() {
     stats_work_sessions.innerHTML = String(works);
-    stats_work_time.innerHTML = msToTimeString(works * work_time + (total_ms_passed * Number(!breaking)));
+    stats_work_time.innerHTML = msToTimeString(total_work_time);
     stats_break_sessions.innerHTML = String(breaks);
-    stats_break_time.innerHTML = msToTimeString(breaks * break_time + (total_ms_passed * Number(breaking)));
+    stats_break_time.innerHTML = msToTimeString(total_break_time);
 }
 
 // state options
@@ -266,13 +270,65 @@ function updateStatus() {
     fadeOut(status_div, setStatus);
 }
 
+// switching functions
+function switchToBreak() {
+    works += 1;
+    work_time_stored += time_passed_ms;
+    breaking = true;
+    time_passed_ms = 0;
+    saved_time = 0;
+    start_time = Date.now();
+    audioAlert(0);
+    timer_status = 2;
+    updateStatus()
+    updatePlaylist();
+}
+
+function switchToWork() {
+    breaks += 1;
+    break_time_stored += time_passed_ms;
+    breaking = false;
+    time_passed_ms = 0;
+    saved_time = 0;
+    start_time = Date.now();
+    audioAlert(1);
+    timer_status = 1;
+    updateStatus();
+    updatePlaylist();
+}
+
+// timer interval
+function timerTick() {
+
+    current_time = Date.now();
+    time_passed_ms = current_time - start_time;
+
+    updateTimeVariables();
+    updateStats();
+
+    // switch to break
+    if (breaking == false) {
+        if ( time_passed_ms >= ( work_time ) ) {
+            switchToBreak();
+        }
+    }
+
+    // switch to work
+    if (breaking == true) {
+        if ( time_passed_ms >= ( break_time ) ) {
+            switchToWork();
+        }
+    }
+    
+    printOutput()
+}
 
 // play-pause button function
 function pauseTimer() {
     running = false;
     paused = true;
     start_button.innerHTML = "Resume";
-    saved_time = total_ms_passed;
+    saved_time = time_passed_ms;
     clearInterval(timer_interval);
     timer_status = 3;
     updateStatus()
@@ -283,6 +339,8 @@ function playTimer() {
     running = true;
     paused = false;
     start_button.innerHTML = "Pause";
+    timer_buttons.classList.add('timer-buttons-full');
+    timer_buttons.classList.remove('timer-buttons-single');
     start_time = Date.now() - saved_time;
     timer_interval = setInterval(timerTick, 100);
     if (breaking == false) {timer_status = 1;} else {timer_status = 2;}
@@ -304,17 +362,34 @@ function resetTimer() {
     running = false;
     paused = false;
     breaking = false;
-    total_ms_passed = 0;
+    time_passed_ms = 0;
     saved_time = 0;
     timer_status = 0;
     updateStatus()
     printOutput();
     start_button.innerHTML = "Start";
+    timer_buttons.classList.add('timer-buttons-single');
+    timer_buttons.classList.remove('timer-buttons-full');
     updatePlaylist();
 
 }
 reset_button.addEventListener('click', function() {
     resetTimer();
+});
+
+// skip button
+function skipTimer() {
+    if (breaking == false) {
+        switchToBreak();
+    }
+    else {
+        switchToWork();
+    }
+}
+skip_button.addEventListener('click', function() {
+    if (running == true) {
+        skipTimer();
+    }
 });
 
 // timer stats button
@@ -332,48 +407,7 @@ timer_stats_button.addEventListener('click', function() {
 
 });
 
-// timer interval
-function timerTick() {
 
-    current_time = Date.now();
-    total_ms_passed = current_time - start_time;
-
-    updateTimeVariables();
-    updateStats();
-
-    // switch to break
-    if (breaking == false) {
-        if ( total_ms_passed >= ( work_time ) ) {
-            works += 1;
-            updateTimeVariables();
-            breaking = true;
-            total_ms_passed = 0;
-            saved_time = 0;
-            start_time = Date.now();
-            audioAlert(0);
-            timer_status = 2;
-            updateStatus()
-            updatePlaylist();
-        }
-    }
-
-    // switch to work
-    if (breaking == true) {
-        if ( total_ms_passed >= ( break_time ) ) {
-            breaks += 1;
-            updateTimeVariables();
-            breaking = false;
-            total_ms_passed = 0;
-            saved_time = 0;
-            start_time = Date.now();
-            audioAlert(1);
-            timer_status = 1;
-            updateStatus();
-            updatePlaylist();
-        }
-    }
-    printOutput()
-}
 
 // ******************* //TIMER - END *******************//
 
@@ -527,22 +561,8 @@ function onPlayerStateChange(event) {
 const settings_open_button = document.getElementById('settings-button');
 const settings_form = document.getElementById('settings-form');
 
-// temporary keyboard shortcuts for debugging
-/*
-window.addEventListener('keydown', function(event) {
-    if (event.code == "KeyS" && event.getModifierState("Shift")) {
-        if (settings_open == true) {
-            settings_open = false;
-            closeSettings();
-        }
-        else {
-            settings_open = true;
-            settingsSetInputs();
-            openSettings();
-        }
-    }
-})
-*/
+
+
 
 // settings sidebar
 function openSettings() {
@@ -740,7 +760,7 @@ const debug_list = [
     {breaking},
     {running},
     {saved_time},
-    {total_ms_passed},
+    {total_ms_passed: time_passed_ms},
     {settings_open},
     {"media_display.dataset.fading_in": media_display.dataset.fading_in},
     {"media_display.dataset.fading_out": media_display.dataset.fading_out},
@@ -763,3 +783,33 @@ debug_list.forEach(debugAddItemString);
 const debug_interval = setInterval(function() {
     debug.innerHTML = debug_output;
 }, 100);
+
+// temporary keyboard shortcuts for debugging
+window.addEventListener('keydown', function(event) {
+    if (event.code == "KeyS" && event.getModifierState("Shift")) {
+        if (settings_open == true) {
+            settings_open = false;
+            closeSettings();
+        }
+        else {
+            settings_open = true;
+            settingsSetInputs();
+            openSettings();
+        }
+    }
+});
+window.addEventListener('keydown', function(event) {
+    if (event.code == "KeyT" && event.getModifierState("Shift")) {
+        if (running == true) {
+            pauseTimer();
+        }
+        else {
+            playTimer();
+        }
+    }
+});
+window.addEventListener('keydown', function(event) {
+    if (event.code == "KeyR" && event.getModifierState("Shift")) {
+        resetTimer();
+    }
+});

@@ -1,9 +1,11 @@
 **** Design Choices ****
  
  - Count up, not down. Counting down encourages looking forward to finishing ("i have this much time left"). Counting up encourages looking at what you've accomplished so far ("i have worked this long").
- - Minutes and seconds only. No milliseconds. Milliseconds are stressful and if in sight can make anxious about time ticking (seconds to a lesser extent too but a compramise has to be made). Hours aren't needed because a pomodoro period should be a couple hours at absolute maximum.
+ - Minutes and seconds only. No milliseconds. Milliseconds are stressful and if in sight can make anxious about time ticking (seconds to a lesser extent too but i feel a compromise has to be made here). Hours aren't needed because a pomodoro period should be a couple hours at absolute maximum.
  - Alert sounds have multiple recordings for each sound. Method to combat audio fatique (sounds becoming irritating and boring after hearing too many times).
  - Trying to do as much as reasonable manually, without extensive libraries or templates. Using css, javascript and jquery. Purely for learning purposes to get a more fundamental knowledge of aspects of the languages.
+ - Focus on simple, clear and aesthetically pleasing visual design. Usage should be entirely intuitive, users should not have to use learning resources of any kind to get full usage of the tool.
+
 
 **** Ideas ****
 
@@ -16,14 +18,14 @@
  - animate "show stats" button: have background wipe in from top and then fade in text once its done.
     - instead of extending elipses (too distracting, extends box) have 3 large elipses below the status box that each fade in 1 by 1.
 - let people popout youtube embed into seperate window?
+    - fullscreen/picture-in-picture solves this for most part.
 - allow youtube playlist to continue from last played timestamp if new playlist hasnt been entered.
 
 
 **** ToDo ****
 
- - settings save button: add css on click down state (feels more like its been clicked)
- - settings save button: have greyed out until user has actually changed a setting.
- - BUG: sometimes when we click reset button the timer stops but the status doesnt get reset.
- - add mute button in case using browser without mute tab
- - validate if playlist entered is public or private (just wont load if private - no player onError)
-
+ - skip button to move onto next break/work prematurely.
+    - needs to not inflate work/break time stat but still add to work/break sessions stat.
+    - shoud we hide unnessesary buttons? only need start when timer isnt running, show reset and skip when running. do dynamic widths?
+ - add theme functionality.
+    - presets instead of full custom to make sure color/contrast works well.
