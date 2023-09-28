@@ -24,8 +24,10 @@
 
 **** ToDo ****
 
- - skip button to move onto next break/work prematurely.
-    - needs to not inflate work/break time stat but still add to work/break sessions stat.
-    - shoud we hide unnessesary buttons? only need start when timer isnt running, show reset and skip when running. do dynamic widths?
  - add theme functionality.
     - presets instead of full custom to make sure color/contrast works well.
+ - clean up javascript
+   - have variables only scoped as needed (have things in global that dont need to be atm)
+   - research, find more stuff.
+ - clean up css????
+   - rsearch

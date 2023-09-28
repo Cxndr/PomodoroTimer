@@ -50,6 +50,7 @@ let sfx_muted = false;
 let music_volume = 40;
 let music_volume_default = music_volume;
 let music_muted = false;
+let debug_mode = false;
 
 // mechanical variables
 let timer_interval;
@@ -748,68 +749,91 @@ $settings_save_msg.addEventListener('animationend', function() {
 
 
 
-// debugging
+// ******************* //DEBUGGING *******************//
 
-const debug = document.getElementById('debug');
-const seperator_string = " | "
-const label_string = ": "
-const debug_list = [
-    {current_playlist},
-    {works},
-    {breaks},
-    {breaking},
-    {running},
-    {saved_time},
-    {total_ms_passed: time_passed_ms},
-    {settings_open},
-    {"media_display.dataset.fading_in": media_display.dataset.fading_in},
-    {"media_display.dataset.fading_out": media_display.dataset.fading_out},
-    {"media_display.style.opacity": media_display.style.opacity},
-    {media_hidden}
+// html object
+const $debug = document.getElementById('debug');
 
-];
-
-let debug_output = ""
-
-function debugAddItemString(list_item, index, arr) {
-    let key = Object.keys(list_item)[0];
-    debug_output += key + ": " + list_item[key];
-    if (index != (arr.length-1)) {
-        debug_output += " | ";
+// variable tracking
+function debugTracking() {
+    
+    const seperator_string = " | "
+    const label_string = ": "
+    const debug_list = [
+        {current_playlist},
+        {works},
+        {breaks},
+        {breaking},
+        {running},
+        {saved_time},
+        {total_ms_passed: time_passed_ms},
+        {settings_open},
+        {"media_display.dataset.fading_in": media_display.dataset.fading_in},
+        {"media_display.dataset.fading_out": media_display.dataset.fading_out},
+        {"media_display.style.opacity": media_display.style.opacity},
+        {media_hidden}
+    ];
+    
+    let debug_output = ""
+    
+    function debugAddItemString(list_item, index, arr) {
+        let key = Object.keys(list_item)[0];
+        debug_output += key + ": " + list_item[key];
+        if (index != (arr.length-1)) {
+            debug_output += " | ";
+        }
     }
+    debug_list.forEach(debugAddItemString);
+    
+    const debug_interval = setInterval(function() {
+        $debug.innerHTML = debug_output;
+    }, 100);
+};
+
+
+// keyboard shortcuts
+function debugKeyboardShortcuts() {
+    window.addEventListener('keydown', function(event) {
+        if (event.code == "KeyS" && event.getModifierState("Shift")) {
+            if (settings_open == true) {
+                settings_open = false;
+                closeSettings();
+            }
+            else {
+                settings_open = true;
+                settingsSetInputs();
+                openSettings();
+            }
+        }
+    });
+    window.addEventListener('keydown', function(event) {
+        if (event.code == "KeyT" && event.getModifierState("Shift")) {
+            if (running == true) {
+                pauseTimer();
+            }
+            else {
+                playTimer();
+            }
+        }
+    });
+    window.addEventListener('keydown', function(event) {
+        if (event.code == "KeyR" && event.getModifierState("Shift")) {
+            resetTimer();
+        }
+    });
+};
+
+
+if (debug_mode == true) {
+    $debug.style.display = "inline";
+    $debug.style.visibility = "visible";
+    debugTracking();
+    debugKeyboardShortcuts();
 }
-debug_list.forEach(debugAddItemString);
+else {
+    $debug.style.display = "none";
+    $debug.style.visibility = "hidden";
+}
 
-const debug_interval = setInterval(function() {
-    debug.innerHTML = debug_output;
-}, 100);
 
-// temporary keyboard shortcuts for debugging
-window.addEventListener('keydown', function(event) {
-    if (event.code == "KeyS" && event.getModifierState("Shift")) {
-        if (settings_open == true) {
-            settings_open = false;
-            closeSettings();
-        }
-        else {
-            settings_open = true;
-            settingsSetInputs();
-            openSettings();
-        }
-    }
-});
-window.addEventListener('keydown', function(event) {
-    if (event.code == "KeyT" && event.getModifierState("Shift")) {
-        if (running == true) {
-            pauseTimer();
-        }
-        else {
-            playTimer();
-        }
-    }
-});
-window.addEventListener('keydown', function(event) {
-    if (event.code == "KeyR" && event.getModifierState("Shift")) {
-        resetTimer();
-    }
-});
+// ******************* //DEBUGGING - END *******************//
