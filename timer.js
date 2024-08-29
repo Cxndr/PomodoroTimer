@@ -346,7 +346,10 @@ function playTimer() {
     timer_interval = setInterval(timerTick, 100);
     if (breaking == false) {timer_status = 1;} else {timer_status = 2;}
     updateStatus()
+    youtube_player.setVolume(music_volume);
     youtube_player.playVideo();
+    youtube_player.setVolume(music_volume);
+    
 }
 start_button.addEventListener('click', function() {
     if (running == true) {
@@ -371,6 +374,7 @@ function resetTimer() {
     start_button.innerHTML = "Start";
     timer_buttons.classList.add('timer-buttons-single');
     timer_buttons.classList.remove('timer-buttons-full');
+    youtube_player.setVolume(music_volume);
     updatePlaylist();
 
 }
