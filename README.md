@@ -2,7 +2,7 @@
 
 ### A very simple but aesthetically elegeant pomodoro timer web app that I built to brush up on modern css and javascript techniques and capabilities.
 
-### Live Site: https://cxndr.github.io/PomodoroTimer/
+### Live Site: [cxndr.github.io/PomodoroTimer](https://cxndr.github.io/PomodoroTimer/)
 
 ## Features
  - Precise timer base on datetime comparison (no jitter or straying over time).
